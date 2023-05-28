@@ -1,1 +1,4 @@
-<app-map></app-map>
+
+
+  <selected-panel [selected]="selected"></selected-panel>
+  <app-map (eventEmitter)="handleEvent($event)" [zoom]="zoom" [center]="center"></app-map>

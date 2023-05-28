@@ -1,0 +1,16 @@
+mat-list-item {
+    background: darkseagreen;
+    padding-left: 5px;
+}
+:host {
+    background-color: darkslategrey;
+
+    height: 100%;
+    position: absolute;
+    top: 8px;
+    left: 0;
+    width: 20%;
+  }
+  .item {
+    padding: 5px;
+  }
