@@ -1,28 +1,35 @@
 import { Component } from '@angular/core';
 import { MapComponent } from './map/map.component';
 import { SelectedPanelComponent } from './selected-panel/selected-panel.component';
+import { GameService } from './services/game/game.service';
+import { MapService } from './services/map.service';
+
+import { PlayerService } from './services/player.service';
+import { GameStateComponent } from "./components/game-state/game-state.component";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
-  standalone: true,
-  imports: [MapComponent, SelectedPanelComponent],
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: true,
+    providers: [GameService, MapService, PlayerService],
+    imports: [MapComponent, SelectedPanelComponent, GameStateComponent]
 })
 export class AppComponent {
   title = 'airisk';
+  center: [number, number] = [51.505, -0.09]
+  zoom: number = 13;
+
   selected: any;
-  center: [number,number] = [51.505, -0.09]
-  zoom: number= 13;
+  constructor(public gameService: GameService, public mapService: MapService, public playerService: PlayerService) { 
+  }
+  
   handleEvent(event: any) {
-    this.selected = event; 
-    console.dir(event.feature.geometry.coordinates[0][0]);
-    let lat = event.feature.geometry.coordinates[0][0][1];
-    let lng = event.feature.geometry.coordinates[0][0][0];
-    this.center = [lat, lng];
-    this.zoom = 8;
-    //set this.zoom to a randome number between 3 and 8
-    // this.zoom = Math.floor(Math.random() * 5) + 3;
-    // console.dir(this.selected); 
+    this.selected = event;
+    this.gameService.mapClick = this.selected;
   }
 }
+
+
+// this.center = [lat, lng];
+// this.zoom = 8;

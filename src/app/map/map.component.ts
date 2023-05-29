@@ -1,11 +1,12 @@
 import { Component, AfterViewInit, Output, EventEmitter, Input } from '@angular/core';
 import * as L from 'leaflet';
 import * as geojsonData from '../../assets/output.json'
+import { MapService } from '../services/map.service';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.css'],
+  styleUrls: ['./map.component.scss'],
   standalone: true,
 })
 export class MapComponent implements AfterViewInit {
@@ -13,6 +14,8 @@ export class MapComponent implements AfterViewInit {
   @Output() eventEmitter = new EventEmitter<any>();
   @Input() center: [number, number] = [51.505, -0.09];
   @Input() zoom: number = 13;
+
+  constructor(public mapService: MapService) { }
 
   //on @Input() change change the zoom level of the map
   ngOnChanges() {
@@ -31,7 +34,6 @@ export class MapComponent implements AfterViewInit {
     });
     //render default map
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
       maxZoom: 18,
     }).addTo(this.map);
 
@@ -60,22 +62,10 @@ export class MapComponent implements AfterViewInit {
       }
     }).addTo(this.map);
 
-    // on hover change color
     geojsonLayer.eachLayer((layer: any) => {
-      layer.on('mouseover', function() {
-        // console.log(layer.options.fillColor);
-        // layer.feature.properties.fillColor = 'red';
-        layer.setStyle({
-          fillColor: 'red'
-        });
-      });
-      layer.on('mouseout', function() {
-        layer.setStyle({
-          fillColor: layer.options.randomColor
-        });
-      });
       layer.on('click', () => {
         this.eventEmitter.emit(layer);
+        this.mapService.selected = layer;
       });
     });
   }
