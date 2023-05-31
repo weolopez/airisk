@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MapComponent } from './map/map.component';
 import { SelectedPanelComponent } from './selected-panel/selected-panel.component';
 import { GameService } from './services/game/game.service';
-import { MapService } from './services/map.service';
+// import { MapService } from './services/map.service';
 
 import { PlayerService } from './services/player.service';
 import { GameStateComponent } from "./components/game-state/game-state.component";
@@ -12,7 +12,7 @@ import { GameStateComponent } from "./components/game-state/game-state.component
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
     standalone: true,
-    providers: [GameService, MapService, PlayerService],
+    providers: [GameService, PlayerService],
     imports: [MapComponent, SelectedPanelComponent, GameStateComponent]
 })
 export class AppComponent {
@@ -21,13 +21,9 @@ export class AppComponent {
   zoom: number = 13;
 
   selected: any;
-  constructor(public gameService: GameService, public mapService: MapService, public playerService: PlayerService) { 
+  constructor(public gameService: GameService,  public playerService: PlayerService) { 
   }
   
-  handleEvent(event: any) {
-    this.selected = event;
-    this.gameService.mapClick = this.selected;
-  }
 }
 
 

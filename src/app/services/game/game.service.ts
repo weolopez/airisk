@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { PlayerService } from '../player.service';
 import { Player } from '../../models/player.model';
-import { MapService } from '../map.service';
+import { MapService } from '../map/map.service';
 
 
 class County {
@@ -16,7 +16,7 @@ class GameState {
   playerResources: number;
   aiResources: number;
   currentPlayer: Player | undefined;
-  selected: Map | undefined;
+  selected: any | undefined;
 
   constructor() {
     this.map = new Map();
@@ -56,7 +56,7 @@ export class GameService {
     return this.gameState;
   }
   set currentPlayer(player: Player) {
-    this.selected = player.selected
+    // this.selected = player.selected
     this.gameState.currentPlayer = player
   }
   get currentPlayer(): Player {
@@ -97,30 +97,37 @@ export class GameService {
 
   // Game progression logic
   gameLoop(): void {
-    // Game progression logic here
-    this.nextPlayer()
+    while (!this.isGameOver()) {
+      for (let player of this.players) {
+        this.currentPlayer = player;
+
+        while (!this.isPlayerTurnOver()) {
+          this.processPlayerInput();
+          this.updateGameState();
+        }
+      }
+    }
+
   }
   nextPlayer() {
     this.currentPlayer = this.players[(this.players.indexOf(this.currentPlayer) + 1) % this.players.length];
   }
   mapClick(event: any) {
-    this.selected = event;
-    if (this.previous) {
-      this.previous.setStyle({
-        fillColor: this.previous.feature.properties.color
-      });
-    }
-    this.previous = this.selected;
-
-
-    // console.dir(event.feature.geometry.coordinates[0][0]);
-    let lat = this.selected.feature.geometry.coordinates[0][0][1];
-    let lng = this.selected.feature.geometry.coordinates[0][0][0];
-    this.selected.feature.properties.color = this.selected.options.fillColor;
-    console.dir(this.selected.feature.properties)
-    this.selected.setStyle({
-      fillColor: 'red'
-    });
   }
-}
 
+  isGameOver() {
+    throw new Error('Function not implemented.')
+    return false
+  }
+
+  isPlayerTurnOver() {
+    throw new Error('Function not implemented.')
+    return false
+  }
+
+  processPlayerInput() {
+    throw new Error('Function not implemented.');
+  }
+
+
+}

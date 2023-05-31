@@ -1,8 +1,8 @@
 import { Component, AfterViewInit, Output, EventEmitter, Input } from '@angular/core';
 import * as L from 'leaflet';
 import * as geojsonData from '../../assets/output.json'
-import { MapService } from '../services/map.service';
-
+import { MapService } from '../services/map/map.service';
+import { GeoJsonObject } from 'geojson';
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -10,8 +10,6 @@ import { MapService } from '../services/map.service';
   standalone: true,
 })
 export class MapComponent implements AfterViewInit {
-  private map: any;
-  @Output() eventEmitter = new EventEmitter<any>();
   @Input() center: [number, number] = [51.505, -0.09];
   @Input() zoom: number = 13;
 
@@ -19,27 +17,27 @@ export class MapComponent implements AfterViewInit {
 
   //on @Input() change change the zoom level of the map
   ngOnChanges() {
-    if (this.map) {
+    if (this.mapService.map) {
       console.log("zooming to " + this.zoom);
-    this.map.setZoom(this.zoom);
-    this.map.panTo(this.center);
+    this.mapService.map.setZoom(this.zoom);
+    this.mapService.map.panTo(this.center);
     }
   }
 
   private initMap(): void {
 
-    this.map = L.map('map', {
+    this.mapService.map = L.map('map', {
       center: this.center,
       zoom: this.zoom
     });
     //render default map
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18,
-    }).addTo(this.map);
+    }).addTo(this.mapService.map);
 
-    this.map.setView([32.1656, -82.9001], 6);
-    // create an overlay that colors each state a different random color
-    const geojsonLayer = L.geoJSON(geojsonData as any, {
+    this.mapService.map.setView([32.1656, -82.9001], 6);
+
+    const layer = L.geoJSON(geojsonData as GeoJsonObject, {
       style: function(feature: any) {
         //for each state, generate a random color
         var randomColor
@@ -60,12 +58,13 @@ export class MapComponent implements AfterViewInit {
           randomColor: randomColor
         };
       }
-    }).addTo(this.map);
-
-    geojsonLayer.eachLayer((layer: any) => {
+    })
+    layer.addTo(this.mapService.map)
+    this.mapService.gameLayer=layer
+    
+    layer.eachLayer((layer: any) => {
       layer.on('click', () => {
-        this.eventEmitter.emit(layer);
-        this.mapService.selected = layer;
+        this.mapService.layer.next(layer)
       });
     });
   }
