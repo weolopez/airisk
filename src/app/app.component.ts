@@ -21,7 +21,7 @@ export class AppComponent {
   zoom: number = 13;
 
   selected: any;
-  constructor(public gameService: GameService,  public playerService: PlayerService) { 
+  constructor(public gameService: GameService ) { 
   }
   
 }

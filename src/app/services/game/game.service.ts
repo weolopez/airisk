@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PlayerService } from '../player.service';
-import { Player } from '../../models/player.model';
+import { PlayerService, Player } from '../player.service';
 import { MapService } from '../map/map.service';
 
 
@@ -37,11 +36,6 @@ class GameState {
 })
 export class GameService {
   public name = 'AIRISK'
-  public players: Array<Player> = [
-    { id: 1, name: 'Player 1', color: 'pink', score: 0 },
-    { id: 1, name: 'Player 2', color: 'blue', score: 0 },
-    { id: 1, name: 'Player 3', color: 'seagreen', score: 0 }
-  ]
 
   selected: any;
   previous: any;
@@ -55,17 +49,6 @@ export class GameService {
   get gameState(): GameState {
     return this.gameState;
   }
-  set currentPlayer(player: Player) {
-    // this.selected = player.selected
-    this.gameState.currentPlayer = player
-  }
-  get currentPlayer(): Player {
-    if (!this.gameState.currentPlayer) {
-      throw new Error('Current player is not set');
-    }
-    return this.gameState.currentPlayer;
-  }
-
 
   // Player or AI action
   attack(county: County): void {
@@ -87,30 +70,19 @@ export class GameService {
     // Update game state here
   }
 
-  // Get county color for UI binding
-  getCountyColor(county: County): string {
-    // Retrieve the color from your game state
-    // This is a simplification, actual implementation may vary
-    // return this.gameState.getCountyColor(county);
-    return 'red';
-  }
-
   // Game progression logic
   gameLoop(): void {
     while (!this.isGameOver()) {
-      for (let player of this.players) {
-        this.currentPlayer = player;
+      // for (let player of this.players) {
+      //   this.currentPlayer = player;
 
-        while (!this.isPlayerTurnOver()) {
-          this.processPlayerInput();
-          this.updateGameState();
-        }
-      }
+      //   while (!this.isPlayerTurnOver()) {
+      //     this.processPlayerInput();
+      //     this.updateGameState();
+      //   }
+      // }
     }
 
-  }
-  nextPlayer() {
-    this.currentPlayer = this.players[(this.players.indexOf(this.currentPlayer) + 1) % this.players.length];
   }
   mapClick(event: any) {
   }

@@ -1,18 +1,18 @@
 <!-- <p id="panel"></p>
 <p id="panel"></p> -->
-<mat-list>
-    <mat-list-item>
+<mat-list currentPlayerColor>
+    <mat-list-item currentPlayerColor>
         <sub>Name:</sub>
-        <div class="item">{{selected?.feature.properties.NAME}}</div>
+        <div class="item">{{selectedTile?.feature.properties.NAME}}</div>
     </mat-list-item>
         <mat-divider></mat-divider>
-    <mat-list-item>
+    <mat-list-item currentPlayerColor>
         <sub>Def:</sub>
-        <div class="item">{{selected?.feature.properties.CENSUSAREA}}</div>
+        <div class="item">{{selectedTile?.feature.properties.CENSUSAREA}}</div>
     </mat-list-item>
     <mat-divider></mat-divider>
-    <mat-list-item>
+    <mat-list-item currentPlayerColor>
         <sub>Populate:</sub>
-        <div class="item">{{selected?.feature.properties.POPULATION}}</div>
+        <div class="item">{{selectedTile?.feature.properties.POPULATION}}</div>
     </mat-list-item>
   </mat-list>

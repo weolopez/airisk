@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GeoJsonObject, Geometry } from 'geojson';
 import { BehaviorSubject } from 'rxjs';
+import { Player, PlayerService } from '../player.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +12,15 @@ export class MapService {
   gameLayer!: L.GeoJSON<any, Geometry>
   layer: BehaviorSubject<any>=new BehaviorSubject(undefined)
   previous: any;
-  constructor() {
+  currentPlayer: Player | undefined;
+  constructor(private playerService: PlayerService) { 
+    playerService.currentPlayer.subscribe(player => {
+      this.currentPlayer = player
+    })
+
     this.layer.subscribe(layer => {
+      let currentPlayer = this.currentPlayer
+      if (!layer) return;
       this.selected = layer;
       if (this.previous) {
         this.previous.setStyle({
@@ -26,9 +34,9 @@ export class MapService {
       let lat = this.selected.feature.geometry.coordinates[0][0][1];
       let lng = this.selected.feature.geometry.coordinates[0][0][0];
       this.selected.feature.properties.color = this.selected.options.fillColor;
-      console.dir(this.selected.feature.properties)
+      // console.dir(this.selected.feature.properties)
       this.selected.setStyle({
-        fillColor: 'red'
+        fillColor: this.currentPlayer?.color.background
       });
 
 //TODO change to https://leafletjs.com/reference.html#map-fitbounds
