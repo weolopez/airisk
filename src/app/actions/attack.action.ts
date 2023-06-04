@@ -1,7 +1,7 @@
-import { Action } from './action';
+import { ActionI } from './action';
 
-export class AttackAction extends Action {
-  override actionI = {
+export class AttackAction implements ActionI {
+  Action: any = {
     schema_version: "v1",
     name_for_human: "Attack",
     name_for_model: "attack",

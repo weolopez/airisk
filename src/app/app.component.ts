@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MapComponent } from './map/map.component';
-import { SelectedPanelComponent } from './selected-panel/selected-panel.component';
+import { SelectedPanelComponent } from './components/selected-panel/selected-panel.component';
 import { GameService } from './services/game/game.service';
 // import { MapService } from './services/map.service';
 
@@ -12,7 +12,6 @@ import { GameStateComponent } from "./components/game-state/game-state.component
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
     standalone: true,
-    providers: [GameService, PlayerService],
     imports: [MapComponent, SelectedPanelComponent, GameStateComponent]
 })
 export class AppComponent {

@@ -51,11 +51,6 @@ export class GameService {
   }
 
   // Player or AI action
-  attack(county: County): void {
-    // Implementation here
-  }
-
-  // Player or AI action
   fortify(county: County): void {
     // Implementation here
   }
@@ -73,6 +68,19 @@ export class GameService {
   // Game progression logic
   gameLoop(): void {
     while (!this.isGameOver()) {
+
+      // Generate a prompt for the AI
+      let prompt = this.generatePrompt(this.gameState);
+
+      // Get the AI's response
+      let response = this.getAIResponse(prompt);
+
+      // Parse the response into an action
+      let action = this.parseResponse(response);
+
+      // Execute the action
+      this.executeAction(action);
+
       // for (let player of this.players) {
       //   this.currentPlayer = player;
 
@@ -83,6 +91,20 @@ export class GameService {
       // }
     }
 
+  }
+
+  generatePrompt(gameState: GameState) {
+    throw new Error('Method not implemented.');
+  }
+
+  executeAction(action: void) {
+    throw new Error('Method not implemented.');
+  }
+  parseResponse(response: void) {
+    
+  }
+  getAIResponse(prompt: void) {
+    throw new Error('Method not implemented.');
   }
   mapClick(event: any) {
   }

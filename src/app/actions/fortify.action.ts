@@ -1,17 +1,17 @@
-import { Action } from './action';
+import { ActionI } from './action';
 
-export class FavoriteAction extends Action {
-    override actionI = {
+export class FortifyAction implements ActionI {
+    Action: any = {
         schema_version: "v1",
-        name_for_human: "Favorite",
-        name_for_model: "favorite",
-        description_for_human: "Add a post to your favorites.",
-        description_for_model: "Plugin for adding a post to your favorites.",
+        name_for_human: "Fortify",
+        name_for_model: "fortify",
+        description_for_human: "Fortify you armies.",
+        description_for_model: "Plugin for fortifing my armies.",
         auth: {
             type: "none"
         },
         api: {
-            type: "airisk",
+            type: "fortify",
             url: "/favorite"
         },
         logo_url: "/assets/logo.png",

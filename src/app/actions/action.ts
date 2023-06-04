@@ -1,8 +1,10 @@
+import { Injectable } from '@angular/core';
 import { AttackAction } from './attack.action';
 import { FavoriteAction } from './favorite.action';
+import { FortifyAction } from './fortify.action';
 
-export class Action {
-    actionI = {
+export interface ActionI {
+    Action: {
         schema_version: "v1",
         name_for_human: "TODO List (No Auth)",
         name_for_model: "todo",
@@ -19,8 +21,12 @@ export class Action {
         contact_email: "support@example.com",
         legal_info_url: "https://example.com/legal"
     }
-
-  static actions = [new AttackAction(), new FavoriteAction()]
-  
-  
 }
+
+@Injectable({
+    providedIn: 'root'
+})
+export class Actions {
+   static action = [new AttackAction(), new FavoriteAction(), new FortifyAction()]
+}
+

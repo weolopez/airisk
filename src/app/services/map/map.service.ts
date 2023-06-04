@@ -35,9 +35,8 @@ export class MapService {
       let lng = this.selected.feature.geometry.coordinates[0][0][0];
       this.selected.feature.properties.color = this.selected.options.fillColor;
       // console.dir(this.selected.feature.properties)
-      this.selected.setStyle({
-        fillColor: this.currentPlayer?.color.background
-      });
+      let style = {fillColor: playerService._currentPlayer.color.background}
+      this.selected.setStyle(style);
 
 //TODO change to https://leafletjs.com/reference.html#map-fitbounds
     this.map.setZoom(8);

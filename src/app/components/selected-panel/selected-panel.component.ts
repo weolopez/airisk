@@ -3,11 +3,11 @@ import {MatButtonModule} from '@angular/material/button';
 import {NgIf} from '@angular/common';
 import {MatListModule} from '@angular/material/list'
 import {MatDividerModule} from '@angular/material/divider'
-import { AppComponent } from '../app.component';
-import { GameService } from '../services/game/game.service';
-import { PlayerService, Player } from '../services/player.service';
-import { MapService } from '../services/map/map.service';
-import { PlayerColorDirective } from '../directives/currrent-player-color';
+import { AppComponent } from '../../app.component';
+import { GameService } from '../../services/game/game.service';
+import { PlayerService, Player } from '../../services/player.service';
+import { MapService } from '../../services/map/map.service';
+import { PlayerColorDirective } from '../../directives/currrent-player-color';
 @Component({
   selector: 'selected-panel',
   templateUrl: './selected-panel.component.html',

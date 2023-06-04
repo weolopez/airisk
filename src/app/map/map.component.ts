@@ -64,6 +64,7 @@ export class MapComponent implements AfterViewInit {
   setStyle(color: string) {
     let mystyle = function (feature: any) {
       let border = "white"
+      color=border
       //for each state, generate a random color
       var randomColor
       if (feature.properties.STATE === "13") {
