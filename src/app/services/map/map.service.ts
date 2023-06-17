@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GeoJsonObject, Geometry } from 'geojson';
 import { BehaviorSubject } from 'rxjs';
-import { Player, PlayerService } from '../player.service';
+import { Player, PlayerService } from '../player/player.service';
 
 @Injectable({
   providedIn: 'root'

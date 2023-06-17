@@ -4,7 +4,7 @@ import { SelectedPanelComponent } from './components/selected-panel/selected-pan
 import { GameService } from './services/game/game.service';
 // import { MapService } from './services/map.service';
 
-import { PlayerService } from './services/player.service';
+import { PlayerService } from './services/player/player.service';
 import { GameStateComponent } from "./components/game-state/game-state.component";
 
 @Component({

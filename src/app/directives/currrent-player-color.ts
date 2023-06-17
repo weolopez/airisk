@@ -1,5 +1,5 @@
 import { Directive, ElementRef, Renderer2, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { PlayerService } from '../services/player.service';
+import { PlayerService } from '../services/player/player.service';
 
 @Directive({
   selector: '[currentPlayerColor]',

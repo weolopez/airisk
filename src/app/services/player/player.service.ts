@@ -62,7 +62,7 @@ export class PlayerService {
   }
 
   nextPlayer() {
-    // this.currentPlayer.next( this.players[(this.players.indexOf(this._currentPlayer) + 1) % this.players.length] )
+    this.currentPlayer.next( this.players[(this.players.indexOf(this._currentPlayer) + 1) % this.players.length] )
   }
 }
 

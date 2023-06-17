@@ -1,8 +1,25 @@
 import { Injectable } from '@angular/core';
-import { PlayerService, Player } from '../player.service';
+import { PlayerService, Player } from '../player/player.service';
 import { MapService } from '../map/map.service';
+import { ActionI } from 'src/app/actions/action';
 
 
+class Game {
+  players: Array<Player>;
+  map: Map<County, Player>;
+  playerResources: number;
+  aiResources: number;
+  currentPlayer: Player | undefined;
+  name: string;
+
+  constructor() {
+    this.name = 'AIRISK'
+    this.players = [];
+    this.map = new Map();
+    this.playerResources = 0;
+    this.aiResources = 0;
+  }
+}
 class County {
 }
 
@@ -10,38 +27,30 @@ class GameState {
   getCountyColor(county: County): string {
     throw new Error('Method not implemented.');
   }
+  game: Game;
 
-  map: Map<County, Player>;
-  playerResources: number;
-  aiResources: number;
-  currentPlayer: Player | undefined;
-  selected: any | undefined;
+  // map: Map<County, Player>;
+  // playerResources: number;
+  // aiResources: number;
+  // currentPlayer: Player | undefined;
+  // selected: any | undefined;
 
   constructor() {
-    this.map = new Map();
-    this.playerResources = 0;
-    this.aiResources = 0;
-    // this.currentPlayer = Player.Human; // Assuming you have a Player enum
+    this.game = new Game();
   }
 
-  // You might have methods to manipulate the game state, like:
-  // - Assigning a county to a player
-  // - Updating resource counts
-  // - Changing the current player
-  // - etc.
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class GameService {
-  public name = 'AIRISK'
 
   selected: any;
   previous: any;
-
-  constructor(public mapService: MapService) {
-
+  game
+  constructor(public mapService: MapService, public playerService: PlayerService) {
+    this.game = new Game();
   }
   set gameState(gameState: GameState) {
     this.gameState = gameState;
@@ -99,6 +108,12 @@ export class GameService {
 
   executeAction(action: void) {
     throw new Error('Method not implemented.');
+  }
+  nextAction(value: ActionI) {
+    let actionString = `Player: ${this.playerService._currentPlayer.name} takes Action: ${value.Action.name_for_human} on ${this.mapService.selected.feature.properties.NAME}`
+    this.mapService.selected.feature.properties.color = this.playerService._currentPlayer.color.background 
+    this.mapService.selected.feature.properties.owner = this.playerService._currentPlayer.name 
+    alert(actionString);
   }
   parseResponse(response: void) {
     

@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { GameService } from '../../services/game/game.service';
-import { PlayerService } from '../../services/player.service';
+import { PlayerService, Player } from '../../services/player/player.service';
 import { CommonModule } from '@angular/common';
 import { PlayerColorDirective } from '../../directives/currrent-player-color';
 import { ThemePalette } from '@angular/material/core';
@@ -26,18 +26,17 @@ export class GameStateComponent {
   currentAction: FormControl<any> = new FormControl();
   actions: any;
 
-  favorite() {
-    if (this.currentPlayer.value) {
-      // this.playerService._currentPlayer.score(this.currentPlayer.value);
-    }
-  }
   constructor( public gameService: GameService,  public playerService: PlayerService, public mapService: MapService) {
     this.currentPlayer.valueChanges.subscribe(() => this.onChangeCurrentPlayer());
     this.currentAction.valueChanges.subscribe((value) => {
-      console.log(value);
+      gameService.nextAction(value);
     })
     this.mapService.layer.subscribe((layer) => this.currentLayer = layer);
     this.actions = Actions.action
+    playerService.currentPlayer.subscribe(player => {
+      if (this.currentPlayer.value == player) return
+      this.currentPlayer.setValue(this.playerService._currentPlayer);
+    })
    }
 
   onChangeCurrentPlayer() {

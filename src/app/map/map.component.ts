@@ -3,7 +3,7 @@ import * as L from 'leaflet';
 import * as geojsonData from '../../assets/output.json'
 import { MapService } from '../services/map/map.service';
 import { GeoJsonObject } from 'geojson';
-import { PlayerService, Player } from '../services/player.service';
+import { PlayerService, Player } from '../services/player/player.service';
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -15,7 +15,7 @@ export class MapComponent implements AfterViewInit {
   @Input() zoom: number = 13;
   layer: any;
 
-  constructor(public mapService: MapService, public playerService: PlayerService) { 
+  constructor(public mapService: MapService, public playerService: PlayerService) {
     playerService.currentPlayer.subscribe(player => {
       if (this.setStyle) {
         this.setStyle(player.color.background)
@@ -47,7 +47,7 @@ export class MapComponent implements AfterViewInit {
 
     const layer = L.geoJSON(geojsonData as GeoJsonObject).addTo(this.mapService.map)
     this.mapService.gameLayer = layer
- 
+
     layer.eachLayer((layer: any) => {
       layer.on('click', () => {
         this.mapService.layer.next(layer)
@@ -64,7 +64,7 @@ export class MapComponent implements AfterViewInit {
   setStyle(color: string) {
     let mystyle = function (feature: any) {
       let border = "white"
-      color=border
+      color = border
       //for each state, generate a random color
       var randomColor
       if (feature.properties.STATE === "13") {
@@ -86,7 +86,7 @@ export class MapComponent implements AfterViewInit {
       };
     }
 
-if (this.layer)
-    this.layer.setStyle(mystyle)
+    if (this.layer)
+      this.layer.setStyle(mystyle)
   }
 }
