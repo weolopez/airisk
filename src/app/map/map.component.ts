@@ -78,10 +78,10 @@ export class MapComponent implements AfterViewInit {
 
       return {
         fillColor: randomColor,
-        weight: 1,
+        weight: 0,
         opacity: 1,
         color: border,
-        fillOpacity: 0.9,
+        fillOpacity: 0,
         randomColor: randomColor
       };
     }

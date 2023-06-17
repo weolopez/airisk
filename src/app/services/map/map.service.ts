@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { GeoJsonObject, Geometry } from 'geojson';
 import { BehaviorSubject } from 'rxjs';
 import { Player, PlayerService } from '../player/player.service';
-
+import * as L from 'leaflet';
 @Injectable({
   providedIn: 'root'
 })
@@ -36,12 +36,19 @@ export class MapService {
       this.selected.feature.properties.color = this.selected.options.fillColor;
       // console.dir(this.selected.feature.properties)
       let style = {fillColor: playerService._currentPlayer.color.background}
-      this.selected.setStyle(style);
+      // this.selected.setStyle(style);
 
 //TODO change to https://leafletjs.com/reference.html#map-fitbounds
     this.map.setZoom(8);
     this.map.panTo([lat,lng]);
 
     })
+  }
+
+  setCenter(latitude: number, longitude: number, radius: number) {
+    L.circle([latitude,longitude], radius).setStyle({fillColor:'blue'}).addTo(this.map);
+    this.map.setZoom(radius);
+    this.map.panTo([latitude, longitude])
+
   }
 }

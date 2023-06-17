@@ -30,6 +30,11 @@ export class SelectedPanelComponent {
 
   }
 
+  location() {
+    navigator.geolocation.getCurrentPosition((position) => {
+       this.mapService.setCenter(position.coords.latitude, position.coords.longitude, position.coords.accuracy)
+     })
+   }
   endTurn() {
     this.playerService.nextPlayer()
   }
