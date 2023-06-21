@@ -2,24 +2,10 @@ import { Injectable } from '@angular/core';
 import { PlayerService, Player } from '../player/player.service';
 import { MapService } from '../map/map.service';
 import { ActionI } from 'src/app/actions/action';
+import { GameI } from 'src/app/games/game';
+import { GoldGame } from 'src/app/games/gold.game';
 
 
-class Game {
-  players: Array<Player>;
-  map: Map<County, Player>;
-  playerResources: number;
-  aiResources: number;
-  currentPlayer: Player | undefined;
-  name: string;
-
-  constructor() {
-    this.name = 'AIRISK'
-    this.players = [];
-    this.map = new Map();
-    this.playerResources = 0;
-    this.aiResources = 0;
-  }
-}
 class County {
 }
 
@@ -27,7 +13,7 @@ class GameState {
   getCountyColor(county: County): string {
     throw new Error('Method not implemented.');
   }
-  game: Game;
+  game: GameI;
 
   // map: Map<County, Player>;
   // playerResources: number;
@@ -36,7 +22,7 @@ class GameState {
   // selected: any | undefined;
 
   constructor() {
-    this.game = new Game();
+    this.game = new GoldGame();
   }
 
 }
@@ -50,7 +36,7 @@ export class GameService {
   previous: any;
   game
   constructor(public mapService: MapService, public playerService: PlayerService) {
-    this.game = new Game();
+    this.game = new GoldGame();
   }
   set gameState(gameState: GameState) {
     this.gameState = gameState;

@@ -1,0 +1,11 @@
+<main *ngIf="!game">
+    <p>List of games</p>
+    <ul>
+        <li *ngFor="let game of games">
+            <a [routerLink]="['/games', game.id]">{{ game.name }}</a>
+        </li>
+    </ul>
+</main>
+<main *ngIf="game">
+    <h1>{{game | json}}</h1>
+</main>

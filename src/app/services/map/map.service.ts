@@ -39,8 +39,9 @@ export class MapService {
       // this.selected.setStyle(style);
 
 //TODO change to https://leafletjs.com/reference.html#map-fitbounds
-    this.map.setZoom(8);
-    this.map.panTo([lat,lng]);
+    // this.map.panTo([lat,lng]);
+    //pan to mouse click
+    // this.map.setZoom(13);
 
     })
   }

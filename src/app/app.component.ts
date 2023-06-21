@@ -11,8 +11,6 @@ import { GameStateComponent } from "./components/game-state/game-state.component
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
-    standalone: true,
-    imports: [MapComponent, SelectedPanelComponent, GameStateComponent]
 })
 export class AppComponent {
   title = 'airisk';

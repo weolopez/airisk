@@ -39,9 +39,22 @@ export class MapComponent implements AfterViewInit {
       zoom: this.zoom
     });
     //render default map
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    let osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18,
     }).addTo(this.mapService.map);
+
+    this.mapService.map.on('click',  (e:any) => {
+      var lat = e.latlng.lat;
+      var lon = e.latlng.lng;
+    
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(jsonData) {
+        console.log(jsonData);
+      });
+    });
 
     this.mapService.map.setView([32.1656, -82.9001], 6);
 
@@ -49,7 +62,12 @@ export class MapComponent implements AfterViewInit {
     this.mapService.gameLayer = layer
 
     layer.eachLayer((layer: any) => {
-      layer.on('click', () => {
+      layer.on('click', (event:any) => {
+        //get event data lat lng
+        let lat = event.latlng.lat;
+        let lng = event.latlng.lng;
+        this.mapService.map.setZoom(18);
+        this.mapService.map.panTo([lat, lng])
         this.mapService.layer.next(layer)
       });
     });
