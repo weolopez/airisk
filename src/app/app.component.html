@@ -5,3 +5,15 @@
 
 
 <router-outlet></router-outlet>
+
+<mat-card id="player">
+  <mat-card-header>
+    <mat-card-title>Player Location</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+      <mat-label>Latitude</mat-label>
+      <input matInput [(ngModel)]="lat" type="number">
+      <mat-label>Longitude</mat-label>
+      <input matInput [(ngModel)]="lng" type="number">
+  </mat-card-content>
+</mat-card>

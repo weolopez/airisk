@@ -12,7 +12,7 @@ import { PlayerService, Player } from '../services/player/player.service';
 })
 export class MapComponent implements AfterViewInit {
   @Input() center: [number, number] = [51.505, -0.09];
-  @Input() zoom: number = 13;
+  @Input() zoom: number = 18;
   layer: any;
 
   constructor(public mapService: MapService, public playerService: PlayerService) {
@@ -27,42 +27,47 @@ export class MapComponent implements AfterViewInit {
   ngOnChanges() {
     if (this.mapService.map) {
       console.log("zooming to " + this.zoom);
-      this.mapService.map.setZoom(this.zoom);
       this.mapService.map.panTo(this.center);
+      this.mapService.map.setZoom(this.zoom);
     }
   }
 
   private initMap(): void {
 
     this.mapService.map = L.map('map', {
+      zoomControl: false,
       center: this.center,
       zoom: this.zoom
+    });
+    this.mapService.map._handlers.forEach((handler: any) => {
+      handler.disable();
+
     });
     //render default map
     let osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18,
     }).addTo(this.mapService.map);
 
-    this.mapService.map.on('click',  (e:any) => {
+    this.mapService.map.on('click', (e: any) => {
       var lat = e.latlng.lat;
       var lon = e.latlng.lng;
-    
+
       fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`)
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(jsonData) {
-        console.log(jsonData);
-      });
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (jsonData) {
+          console.log(jsonData);
+        });
     });
 
-    this.mapService.map.setView([32.1656, -82.9001], 6);
+    // this.mapService.map.setView([32.1656, -82.9001], 6);
 
     const layer = L.geoJSON(geojsonData as GeoJsonObject).addTo(this.mapService.map)
     this.mapService.gameLayer = layer
 
     layer.eachLayer((layer: any) => {
-      layer.on('click', (event:any) => {
+      layer.on('click', (event: any) => {
         //get event data lat lng
         let lat = event.latlng.lat;
         let lng = event.latlng.lng;
@@ -72,6 +77,8 @@ export class MapComponent implements AfterViewInit {
       });
     });
     this.layer = layer
+
+    this.mapService.map.setView([this.center[1], this.center[0]], this.zoom);
   }
 
   ngAfterViewInit(): void {

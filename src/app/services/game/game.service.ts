@@ -3,7 +3,7 @@ import { PlayerService, Player } from '../player/player.service';
 import { MapService } from '../map/map.service';
 import { ActionI } from 'src/app/actions/action';
 import { GameI } from 'src/app/games/game';
-import { GoldGame } from 'src/app/games/gold.game';
+import { GoldGame } from 'src/app/games/gold/gold.game';
 
 
 class County {

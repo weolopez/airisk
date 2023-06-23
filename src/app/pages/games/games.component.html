@@ -7,5 +7,22 @@
     </ul>
 </main>
 <main *ngIf="game">
-    <h1>{{game | json}}</h1>
+    <mat-card>
+        <mat-card-header>
+          <mat-card-title>{{ game.name }} <a href="/{{game.id}}">play</a></mat-card-title>
+          <mat-card-subtitle>{{ game.description }}</mat-card-subtitle>
+        </mat-card-header>
+        <div *ngIf="game.features">
+        <img mat-card-image src="{{ game.features[0].properties.image }}">
+        <mat-card-content>
+          <p>{{ game.features[0].properties.description }}</p>
+          <p>Address: {{ game.features[0].properties.address }}</p>
+          <p>Phone: {{ game.features[0].properties.phone }}</p>
+          <p>Website: {{ game.features[0].properties.website }}</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button [routerLink]="['/games', game.id]">View Details</button>
+        </mat-card-actions>
+        </div>
+      </mat-card>
 </main>

@@ -18,6 +18,7 @@ export class ScavengerHuntGame implements GameI {
     this.aiResources = 0;
     this.items = ['item1', 'item2', 'item3', 'item4', 'item5'];
   }
+  features!: { type: string; geometry: { type: string; coordinates: number[]; }; properties: { name: string; address: string; description: string; image: string; website: string; phone: string; }; }[];
 
   start() {
     // Start the game

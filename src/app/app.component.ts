@@ -18,6 +18,8 @@ export class AppComponent {
   zoom: number = 13;
 
   selected: any;
+lat: any;
+lng: any;
   constructor(public gameService: GameService ) { 
   }
   
