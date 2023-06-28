@@ -19,14 +19,14 @@ import { MatButtonModule } from '@angular/material/button';
   ]
 })
 export class GoldGame implements GameI {
-  isSim=false;
+  isSim = false;
   player: any;
   loop: any;
-setSim(isSim: boolean) {
-  if (this.gameService) {
-    this.gameService.gameState.next({isSim:isSim})
+  setSim(isSim: boolean) {
+    if (this.gameService) {
+      this.gameService.gameState.next({ isSim: isSim })
+    }
   }
-}
   id: string = 'GoldGame'
   name: string = 'Gold Game'
   description: string = 'Find the pot of gold'
@@ -46,7 +46,7 @@ setSim(isSim: boolean) {
       "phone": "(404) 370-4100"
     }
   }]
-  center:[number, number] = [33.7748,-84.294]
+  center: [number, number] = [33.7748, -84.294]
   zoom = 16
   map: L.Map | undefined;
   circle: L.Circle<any> | undefined;
@@ -54,16 +54,20 @@ setSim(isSim: boolean) {
     if (gameService) {
       gameService.game = this
       gameService.gameState.subscribe((state: any) => {
-        if (state.isSim!=undefined) {
+        if (state.isSim != undefined) {
           this.isSim = state.isSim
-          if (!this.isSim)
-          this.loop = setInterval(() => {
+          if (!this.isSim) {
+
+            this.loop = setInterval(() => {
               navigator.geolocation.getCurrentPosition((position) => {
-                gameService.gameState.next({playerLocation: [position.coords.latitude, position.coords.longitude]})
+                gameService.gameState.next({ playerLocation: [position.coords.latitude, position.coords.longitude] })
               })
-          }, 100);
+            }, 100);
+          } else {
+            clearInterval(this.loop)
+          }
         }
-        if (state.playerLocation!=undefined) {
+        if (state.playerLocation != undefined) {
           if (!this.isGameOver() && mapService) {
             // this.mapService.setCenter(lat, lng, 17)
             if (!this.player) {
@@ -99,16 +103,16 @@ setSim(isSim: boolean) {
     // alert('isGameOver')
     //check if player is at the location
     // if (this.playerService?.playerLocation) {
-      if (this.mapService && !this.circle) {
-        this.circle = this.mapService.setCenter(this.features[0].geometry.coordinates, 16)
-      }
-      // let playerLocation = this.playerService.playerLocation
-      let distance = 0//this.distance(playerLocation, this.features[0].geometry.coordinates)
-      if (distance && distance < 0.0001) {
-        return true
-      } else {
-        return false
-      }
+    if (this.mapService && !this.circle) {
+      this.circle = this.mapService.setCenter(this.features[0].geometry.coordinates, 16)
+    }
+    // let playerLocation = this.playerService.playerLocation
+    let distance = 0//this.distance(playerLocation, this.features[0].geometry.coordinates)
+    if (distance && distance < 0.0001) {
+      return true
+    } else {
+      return false
+    }
     // }
     // return false
   }
