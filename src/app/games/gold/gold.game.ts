@@ -82,9 +82,9 @@ setTracking(isTracking: boolean) {
               this.player.addTo(mapService.map);
             } else {
               let distance = this.distance(state.playerLocation, this.player.getLatLng())
-              if (distance && distance < 0.0001) return
+              if (distance && distance < 0.001) return
               //  L.polyline(state.playerLocation).setStyle({fillColor:'blue'}).addTo(mapService.map);
-              if (this.isTracking) L.circle(state.playerLocation, 5).setStyle({fillColor:'blue'}).addTo(mapService.map)
+              if (this.isTracking) L.circle(state.playerLocation, 2).setStyle({fillColor:'blue'}).addTo(mapService.map)
               this.player.setLatLng(state.playerLocation)
               mapService.map.panTo(state.playerLocation);
               distance = this.distance(state.playerLocation, this.features[0].geometry.coordinates)
