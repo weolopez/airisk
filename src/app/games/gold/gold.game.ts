@@ -19,13 +19,13 @@ import { MatButtonModule } from '@angular/material/button';
   ]
 })
 export class GoldGame implements GameI {
-isTracking: any;
-setTracking(isTracking: boolean) {
-  if (this.gameService) {
-    this.gameService.gameState.next({ isTracking: isTracking })
+  isTracking: any;
+  setTracking(isTracking: boolean) {
+    if (this.gameService) {
+      this.gameService.gameState.next({ isTracking: isTracking })
+    }
+    this.isTracking = isTracking;
   }
-  this.isTracking = isTracking;
-}
   isSim = false;
   player: any;
   loop: any;
@@ -67,6 +67,10 @@ setTracking(isTracking: boolean) {
           if (!this.isSim) {
             this.loop = setInterval(() => {
               navigator.geolocation.getCurrentPosition((position) => {
+
+                let distance = this.distance(state.playerLocation, this.player.getLatLng())
+                if (distance && distance > 0.0001) return
+
                 gameService.gameState.next({ playerLocation: [position.coords.latitude, position.coords.longitude] })
               })
             }, 100);
@@ -81,13 +85,11 @@ setTracking(isTracking: boolean) {
               this.player = mapService.createEntity('player')
               this.player.addTo(mapService.map);
             } else {
-              let distance = this.distance(state.playerLocation, this.player.getLatLng())
-              if (distance && distance < 0.001) return
               //  L.polyline(state.playerLocation).setStyle({fillColor:'blue'}).addTo(mapService.map);
-              if (this.isTracking) L.circle(state.playerLocation, 2).setStyle({fillColor:'blue'}).addTo(mapService.map)
+              if (this.isTracking) L.circle(state.playerLocation, 2).setStyle({ fillColor: 'blue' }).addTo(mapService.map)
               this.player.setLatLng(state.playerLocation)
               mapService.map.panTo(state.playerLocation);
-              distance = this.distance(state.playerLocation, this.features[0].geometry.coordinates)
+              let distance = this.distance(state.playerLocation, this.features[0].geometry.coordinates)
               if (distance && distance < 0.0001) {
                 this.gameService?.gameState.next({ isGameOver: true })
               }
