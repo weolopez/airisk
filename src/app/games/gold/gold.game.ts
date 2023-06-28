@@ -55,7 +55,7 @@ setTracking(isTracking: boolean) {
     }
   }]
   center: [number, number] = [33.7748, -84.294]
-  zoom = 16
+  zoom = 18
   map: L.Map | undefined;
   circle: L.Circle<any> | undefined;
   constructor(public mapService?: MapService, public gameService?: GameService) {
