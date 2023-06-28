@@ -3,7 +3,6 @@ import * as L from 'leaflet';
 import * as geojsonData from '../../assets/output.json'
 import { MapService } from '../services/map/map.service';
 import { GeoJsonObject } from 'geojson';
-import { PlayerService, Player } from '../services/player/player.service';
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -13,14 +12,15 @@ import { PlayerService, Player } from '../services/player/player.service';
 export class MapComponent implements AfterViewInit {
   @Input() center: [number, number] = [51.505, -0.09];
   @Input() zoom: number = 18;
+  @Output() map = new EventEmitter<L.Map>();
   layer: any;
 
-  constructor(public mapService: MapService, public playerService: PlayerService) {
-    playerService.currentPlayer.subscribe(player => {
-      if (this.setStyle) {
-        this.setStyle(player.color.background)
-      }
-    })
+  constructor(public mapService: MapService) {
+    // playerService.currentPlayer.subscribe(player => {
+    //   if (this.setStyle) {
+    //     this.setStyle(player.color.background)
+    //   }
+    // })
   }
 
   //on @Input() change change the zoom level of the map
@@ -36,6 +36,7 @@ export class MapComponent implements AfterViewInit {
 
     this.mapService.map = L.map('map', {
       zoomControl: false,
+      touchZoom: false,
       center: this.center,
       zoom: this.zoom
     });
@@ -71,19 +72,21 @@ export class MapComponent implements AfterViewInit {
         //get event data lat lng
         let lat = event.latlng.lat;
         let lng = event.latlng.lng;
-        this.mapService.map.setZoom(18);
-        this.mapService.map.panTo([lat, lng])
-        this.mapService.layer.next(layer)
+        // this.mapService.map.setZoom(18);
+        // this.mapService.map.panTo([lat, lng])
+        // this.mapService.layer.next(layer)
+        this.mapService.event.next(event)
       });
     });
     this.layer = layer
+    this.mapService.map.setView([this.center[0], this.center[1]], this.zoom);
 
-    this.mapService.map.setView([this.center[1], this.center[0]], this.zoom);
+    this.map.emit(this.mapService.map);
   }
 
   ngAfterViewInit(): void {
     this.initMap();
-    this.playerService.currentPlayer.next(this.playerService.players[2])
+    // this.playerService.currentPlayer.next(this.playerService.players[2])
   }
 
   setStyle(color: string) {
@@ -114,4 +117,5 @@ export class MapComponent implements AfterViewInit {
     if (this.layer)
       this.layer.setStyle(mystyle)
   }
+
 }

@@ -6,7 +6,7 @@
 
 <router-outlet></router-outlet>
 
-<mat-card id="player">
+<mat-card  *ngIf="isSim" id="player">
   <mat-card-header>
     <mat-card-title>Player Location</mat-card-title>
   </mat-card-header>

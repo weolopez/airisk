@@ -1,31 +1,11 @@
 import { Injectable } from '@angular/core';
-import { PlayerService, Player } from '../player/player.service';
 import { MapService } from '../map/map.service';
 import { ActionI } from 'src/app/actions/action';
 import { GameI } from 'src/app/games/game';
 import { GoldGame } from 'src/app/games/gold/gold.game';
+import { _RecycleViewRepeaterStrategy } from '@angular/cdk/collections';
+import { BehaviorSubject } from 'rxjs';
 
-
-class County {
-}
-
-class GameState {
-  getCountyColor(county: County): string {
-    throw new Error('Method not implemented.');
-  }
-  game: GameI;
-
-  // map: Map<County, Player>;
-  // playerResources: number;
-  // aiResources: number;
-  // currentPlayer: Player | undefined;
-  // selected: any | undefined;
-
-  constructor() {
-    this.game = new GoldGame();
-  }
-
-}
 
 @Injectable({
   providedIn: 'root',
@@ -34,21 +14,29 @@ export class GameService {
 
   selected: any;
   previous: any;
-  game
-  constructor(public mapService: MapService, public playerService: PlayerService) {
-    this.game = new GoldGame();
-  }
-  set gameState(gameState: GameState) {
-    this.gameState = gameState;
-  }
-  get gameState(): GameState {
-    return this.gameState;
-  }
+  game!: GameI;
+  _isGameOver: boolean = false;
+  playerLocation: GeolocationPosition = {
+    coords: {
+      latitude: 33.7748, longitude: -84.294, accuracy: 0,
+      altitude: null,
+      altitudeAccuracy: null,
+      heading: null,
+      speed: null
+    }, timestamp: 0
+  };
+  loop: any
 
-  // Player or AI action
-  fortify(county: County): void {
-    // Implementation here
+  gameState: BehaviorSubject<any> = new BehaviorSubject(undefined)
+  constructor(public mapService: MapService) {
+    // this.game = new GoldGame(mapService);
   }
+  // set gameState(gameState: GameState) {
+  //   this.gameState = gameState;
+  // }
+  // get gameState(): GameState {
+  //   return this.gameState;
+  // }
 
   // AI decision-making logic
   aiTurn(): void {
@@ -61,68 +49,82 @@ export class GameService {
   }
 
   // Game progression logic
-  gameLoop(): void {
-    while (!this.isGameOver()) {
+  gameLoop(options: any): void {
 
-      // Generate a prompt for the AI
-      let prompt = this.generatePrompt(this.gameState);
-
-      // Get the AI's response
-      let response = this.getAIResponse(prompt);
-
-      // Parse the response into an action
-      let action = this.parseResponse(response);
-
-      // Execute the action
-      this.executeAction(action);
-
-      // for (let player of this.players) {
-      //   this.currentPlayer = player;
-
-      //   while (!this.isPlayerTurnOver()) {
-      //     this.processPlayerInput();
-      //     this.updateGameState();
-      //   }
-      // }
-    }
-
+    if (options.timedLoop) {
+      //check player location every 100ms
+      this.loop = setInterval(() => {
+        if (options.trackPlayerLocation)
+          navigator.geolocation.getCurrentPosition((position) => {
+            this.gameState.next({playerLocation: [this.playerLocation.coords.latitude, this.playerLocation.coords.longitude]})
+          })
+          this.isGameOver(this.game.isGameOver())
+      }, 100);
   }
 
-  generatePrompt(gameState: GameState) {
-    throw new Error('Method not implemented.');
-  }
+  // while (!this.isGameOver()) {
 
-  executeAction(action: void) {
-    throw new Error('Method not implemented.');
-  }
-  nextAction(value: ActionI) {
-    let actionString = `Player: ${this.playerService._currentPlayer.name} takes Action: ${value.Action.name_for_human} on ${this.mapService.selected.feature.properties.NAME}`
-    this.mapService.selected.feature.properties.color = this.playerService._currentPlayer.color.background 
-    this.mapService.selected.feature.properties.owner = this.playerService._currentPlayer.name 
-    alert(actionString);
-  }
-  parseResponse(response: void) {
-    
-  }
-  getAIResponse(prompt: void) {
-    throw new Error('Method not implemented.');
-  }
-  mapClick(event: any) {
-  }
+  // this.mapService.moveEntity('player', [this.playerLocation.coords.latitude, this.playerLocation.coords.longitude])//, this.playerLocation.coords.accuracy)
 
-  isGameOver() {
-    throw new Error('Function not implemented.')
-    return false
-  }
+  // Generate a prompt for the AI
+  // let prompt = this.generatePrompt(this.gameState);
 
-  isPlayerTurnOver() {
-    throw new Error('Function not implemented.')
-    return false
-  }
+  // Get the AI's response
+  // let response = this.getAIResponse(prompt);
 
-  processPlayerInput() {
-    throw new Error('Function not implemented.');
+  // Parse the response into an action
+  // let action = this.parseResponse(response);
+
+  // Execute the action
+  // this.executeAction(action);
+
+  // for (let player of this.players) {
+  //   this.currentPlayer = player;
+
+  //   while (!this.isPlayerTurnOver()) {
+  //     this.processPlayerInput();
+  //     this.updateGameState();
+  //   }
+  // }
+  // }
+
+}
+
+executeAction(action: void) {
+  throw new Error('Method not implemented.');
+}
+nextAction(value: ActionI) {
+  // let actionString = `Player: ${this.playerService._currentPlayer.name} takes Action: ${value.Action.name_for_human} on ${this.mapService.selected.feature.properties.NAME}`
+  // this.mapService.selected.feature.properties.color = this.playerService._currentPlayer.color.background
+  // this.mapService.selected.feature.properties.owner = this.playerService._currentPlayer.name
+  // alert(actionString);
+}
+parseResponse(response: void) {
+
+}
+getAIResponse(prompt: void) {
+  throw new Error('Method not implemented.');
+}
+mapClick(event: any) {
+}
+
+isGameOver(setGameOver: boolean) {
+  if (setGameOver) {
+    clearInterval(this.loop);
+    this._isGameOver = true
+    this.game.gameOver() 
   }
+  return this._isGameOver
+}
+
+isPlayerTurnOver() {
+  throw new Error('Function not implemented.')
+  return false
+}
+
+processPlayerInput() {
+  throw new Error('Function not implemented.');
+}
 
 
 }

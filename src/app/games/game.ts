@@ -3,6 +3,7 @@ import { GoldGame } from "./gold/gold.game";
 import { ScavengerHuntGame } from "./scavenger-hunt.game";
 
 export interface GameI {
+  gameOver(): unknown;
   id: string;
   name: string;
   description: string;
@@ -22,8 +23,9 @@ export interface GameI {
       phone: string;
     };
   }>;
+  isGameOver(): boolean;
 }
 
 export class Games {
-   static games = [new GoldGame(), new ScavengerHuntGame]
+   static games = [new GoldGame(), new ScavengerHuntGame()]
 }

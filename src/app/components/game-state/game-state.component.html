@@ -8,7 +8,7 @@
     <mylabel id="activeUser" currentPlayerColor>
         <mat-label >Active User</mat-label>
         <mat-select [formControl]="currentPlayer">
-        <mat-option *ngFor="let player of playerService.players" [value]="player">{{player.name}}</mat-option>
+        <!-- <mat-option *ngFor="let player of playerService.players" [value]="player">{{player.name}}</mat-option> -->
         </mat-select>
     </mylabel>
     <span class="example-spacer"></span>

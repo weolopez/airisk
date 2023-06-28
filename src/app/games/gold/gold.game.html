@@ -1,3 +1,10 @@
-<h1 id="title">{{id}}</h1>
-
-<app-map [zoom]="zoom" [center]="center"></app-map>
+<mat-card id="title">
+    <mat-card-header>
+      <mat-card-title>{{id}}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content [style.background-color]="!isSim ? 'white' : 'green'">
+       <p>{{features[0].properties.clue}}</p> 
+      <button  (click)="setSim(!isSim)">sim</button>
+    </mat-card-content>
+  </mat-card>
+<app-map [zoom]="zoom" [center]="center" (map)="myMap"></app-map>

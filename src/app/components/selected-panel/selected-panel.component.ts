@@ -5,7 +5,6 @@ import {MatListModule} from '@angular/material/list'
 import {MatDividerModule} from '@angular/material/divider'
 import { AppComponent } from '../../app.component';
 import { GameService } from '../../services/game/game.service';
-import { PlayerService, Player } from '../../services/player/player.service';
 import { MapService } from '../../services/map/map.service';
 import { PlayerColorDirective } from '../../directives/currrent-player-color';
 @Component({
@@ -18,26 +17,23 @@ import { PlayerColorDirective } from '../../directives/currrent-player-color';
 export class SelectedPanelComponent {
   selectedTile: any
   selectedPlayer: any;
-  constructor(public gameService: GameService, public mapService: MapService, public playerService: PlayerService) {
+  constructor(public gameService: GameService, public mapService: MapService) {
     mapService.layer.subscribe(layer => {
       this.selectedTile=layer
     })
-    playerService.currentPlayer.subscribe(player => {
-      this.selectedPlayer=player
+    // playerService.currentPlayer.subscribe(player => {
+      this.selectedPlayer='player'
       //set the css background of host to the player color
       
-    })
+    // })
 
   }
 
-  location() {
-    navigator.geolocation.getCurrentPosition((position) => {
-       this.mapService.setCenter(position.coords.latitude, position.coords.longitude, position.coords.accuracy)
-     })
-   }
   endTurn() {
-    this.playerService.nextPlayer()
+    // this.playerService.nextPlayer()
   }
   showFiller = false;
-
+  location() {
+    
+  }
 }
