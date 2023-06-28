@@ -19,9 +19,17 @@ import { MatButtonModule } from '@angular/material/button';
   ]
 })
 export class GoldGame implements GameI {
+isTracking: any;
+setTracking(isTracking: boolean) {
+  if (this.gameService) {
+    this.gameService.gameState.next({ isTracking: isTracking })
+  }
+  this.isTracking = isTracking;
+}
   isSim = false;
   player: any;
   loop: any;
+  _isGameOver: boolean = false;
   setSim(isSim: boolean) {
     if (this.gameService) {
       this.gameService.gameState.next({ isSim: isSim })
@@ -57,7 +65,6 @@ export class GoldGame implements GameI {
         if (state.isSim != undefined) {
           this.isSim = state.isSim
           if (!this.isSim) {
-
             this.loop = setInterval(() => {
               navigator.geolocation.getCurrentPosition((position) => {
                 gameService.gameState.next({ playerLocation: [position.coords.latitude, position.coords.longitude] })
@@ -68,16 +75,28 @@ export class GoldGame implements GameI {
           }
         }
         if (state.playerLocation != undefined) {
-          if (!this.isGameOver() && mapService) {
+          if (!this._isGameOver && mapService) {
             // this.mapService.setCenter(lat, lng, 17)
             if (!this.player) {
               this.player = mapService.createEntity('player')
               this.player.addTo(mapService.map);
             } else {
+              let distance = this.distance(state.playerLocation, this.player.getLatLng())
+              if (distance && distance < 0.0001) return
+              //  L.polyline(state.playerLocation).setStyle({fillColor:'blue'}).addTo(mapService.map);
+              if (this.isTracking) L.circle(state.playerLocation, 5).setStyle({fillColor:'blue'}).addTo(mapService.map)
               this.player.setLatLng(state.playerLocation)
+              mapService.map.panTo(state.playerLocation);
+              distance = this.distance(state.playerLocation, this.features[0].geometry.coordinates)
+              if (distance && distance < 0.0001) {
+                this.gameService?.gameState.next({ isGameOver: true })
+              }
             }
           }
-          this.isGameOver()
+        }
+        if (state.isGameOver != undefined) {
+          this._isGameOver = state.isGameOver
+          alert('Game Over')
         }
       })
     }
@@ -90,16 +109,12 @@ export class GoldGame implements GameI {
       // this.circle = this.mapService.setCenter(this.features[0].geometry.coordinates, 16)
     }
   }
-  gameOver(): unknown {
-    alert('Game Over')
-    throw new Error('Method not implemented.');
-  }
   distance(a: [number, number], b: [number, number]) {
     let dx = a[0] - b[0]
     let dy = a[1] - b[1]
     return Math.sqrt(dx * dx + dy * dy)
   }
-  isGameOver(): boolean {
+  isGameOver(playerLocation: [number, number]) {
     // alert('isGameOver')
     //check if player is at the location
     // if (this.playerService?.playerLocation) {
@@ -107,14 +122,10 @@ export class GoldGame implements GameI {
       this.circle = this.mapService.setCenter(this.features[0].geometry.coordinates, 16)
     }
     // let playerLocation = this.playerService.playerLocation
-    let distance = 0//this.distance(playerLocation, this.features[0].geometry.coordinates)
+    let distance = this.distance(playerLocation, this.features[0].geometry.coordinates)
     if (distance && distance < 0.0001) {
-      return true
-    } else {
-      return false
+      this.gameService?.gameState.next({ isGameOver: true })
     }
-    // }
-    // return false
   }
   myMap(map: L.Map) {
     this.map = map

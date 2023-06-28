@@ -3,7 +3,6 @@ import { GoldGame } from "./gold/gold.game";
 import { ScavengerHuntGame } from "./scavenger-hunt.game";
 
 export interface GameI {
-  gameOver(): unknown;
   id: string;
   name: string;
   description: string;
@@ -23,7 +22,7 @@ export interface GameI {
       phone: string;
     };
   }>;
-  isGameOver(): boolean;
+  isGameOver(playerLocation: [number,number]) :any;
 }
 
 export class Games {

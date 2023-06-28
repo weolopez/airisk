@@ -27,7 +27,7 @@ export class GameService {
   };
   loop: any
 
-  gameState: BehaviorSubject<any> = new BehaviorSubject(undefined)
+  gameState: BehaviorSubject<any> = new BehaviorSubject({})
   constructor(public mapService: MapService) {
     // this.game = new GoldGame(mapService);
   }
@@ -50,17 +50,6 @@ export class GameService {
 
   // Game progression logic
   gameLoop(options: any): void {
-
-    if (options.timedLoop) {
-      //check player location every 100ms
-      this.loop = setInterval(() => {
-        if (options.trackPlayerLocation)
-          navigator.geolocation.getCurrentPosition((position) => {
-            this.gameState.next({playerLocation: [this.playerLocation.coords.latitude, this.playerLocation.coords.longitude]})
-          })
-          this.isGameOver(this.game.isGameOver())
-      }, 100);
-  }
 
   // while (!this.isGameOver()) {
 
@@ -108,14 +97,6 @@ getAIResponse(prompt: void) {
 mapClick(event: any) {
 }
 
-isGameOver(setGameOver: boolean) {
-  if (setGameOver) {
-    clearInterval(this.loop);
-    this._isGameOver = true
-    this.game.gameOver() 
-  }
-  return this._isGameOver
-}
 
 isPlayerTurnOver() {
   throw new Error('Function not implemented.')

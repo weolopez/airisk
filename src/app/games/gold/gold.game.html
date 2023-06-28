@@ -5,6 +5,7 @@
     <mat-card-content [style.background-color]="!isSim ? 'white' : 'green'">
        <p>{{features[0].properties.clue}}</p> 
       <button  (click)="setSim(!isSim)">sim</button>
+      <button  (click)="setTracking(!isTracking)">Tracking</button>
     </mat-card-content>
   </mat-card>
 <app-map [zoom]="zoom" [center]="center" (map)="myMap"></app-map>
