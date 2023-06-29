@@ -2,7 +2,7 @@ import { Component, AfterViewInit, Output, EventEmitter, Input } from '@angular/
 import * as L from 'leaflet';
 import * as geojsonData from '../../assets/output.json'
 import { MapService } from '../services/map/map.service';
-import { GeoJsonObject } from 'geojson';
+import { GeoJsonObject, Geometry } from 'geojson';
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -48,23 +48,24 @@ export class MapComponent implements AfterViewInit {
     let osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18,
     }).addTo(this.mapService.map);
+    this.mapService.osm = osm
 
-    this.mapService.map.on('click', (e: any) => {
-      var lat = e.latlng.lat;
-      var lon = e.latlng.lng;
+    // this.mapService.map.on('click', (e: any) => {
+    //   var lat = e.latlng.lat;
+    //   var lon = e.latlng.lng;
 
-      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`)
-        .then(function (response) {
-          return response.json();
-        })
-        .then(function (jsonData) {
-          console.log(jsonData);
-        });
-    });
+    //   fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`)
+    //     .then(function (response) {
+    //       return response.json();
+    //     })
+    //     .then(function (jsonData) {
+    //       console.log(jsonData);
+    //     });
+    // });
 
     // this.mapService.map.setView([32.1656, -82.9001], 6);
 
-    const layer = L.geoJSON(geojsonData as GeoJsonObject).addTo(this.mapService.map)
+    const layer: L.GeoJSON<any, Geometry> = L.geoJSON(geojsonData as GeoJsonObject).addTo(this.mapService.map)
     this.mapService.gameLayer = layer
 
     layer.eachLayer((layer: any) => {

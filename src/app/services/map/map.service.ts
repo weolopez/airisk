@@ -14,6 +14,7 @@ export class MapService {
   layer: BehaviorSubject<any>=new BehaviorSubject(undefined)
   event: BehaviorSubject<any>=new BehaviorSubject(undefined)
   previous: any;
+  osm!: L.TileLayer;
   constructor() { 
     // playerService.currentPlayer.subscribe(player => {
     //   this.currentPlayer = player

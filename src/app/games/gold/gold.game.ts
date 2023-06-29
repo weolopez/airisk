@@ -2,12 +2,13 @@ import { MatCardModule } from '@angular/material/card';
 import { MapComponent } from '../../map/map.component';
 import { GameI } from '../game';
 import { Component } from '@angular/core';
-import { MapService } from 'src/app/services/map/map.service';
-import { GameService } from 'src/app/services/game/game.service';
+import { MapService } from '../../services/map/map.service';
+import { GameService } from '../../services/game/game.service';
 import L, { Polyline } from 'leaflet';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
-import { getUserPath } from 'src/app/services/map/icon-functions';
+import { getUserPath } from '../../services/map/path-functions';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-gold',
@@ -18,14 +19,15 @@ import { getUserPath } from 'src/app/services/map/icon-functions';
     CommonModule,
     MapComponent,
     MatCardModule,
-    MatButtonModule
+    MatButtonModule,FormsModule
   ]
 })
 export class GoldGame implements GameI {
-clearHistory() {
-  localStorage.removeItem('history')
-  this.history = []
-}
+timeInterval: number = 1;
+  clearHistory() {
+    localStorage.removeItem('history'+this.timeInterval)
+    this.history = []
+  }
   isTracking: any;
   setTracking(isTracking: boolean) {
     if (this.gameService) {
@@ -65,7 +67,8 @@ clearHistory() {
   zoom = 18
   map: L.Map | undefined;
   circle: L.Circle<any> | undefined;
-  history = JSON.parse(localStorage.getItem('history') || '[]')
+  history = JSON.parse(localStorage.getItem('history'+this.timeInterval) || '[]')
+  currentInterval = this.timeInterval
   constructor(public mapService?: MapService, public gameService?: GameService) {
     if (gameService) {
       gameService.game = this
@@ -73,22 +76,24 @@ clearHistory() {
         if (state.isSim != undefined) {
           this.isSim = state.isSim
           if (!this.isSim) {
-            let pos: [number,number] = [0,0]
-            this.loop = setInterval(() => {
-              // navigator.geolocation.getCurrentPosition((position) => {
 
-                getUserPath(1000).then((path: Polyline) => {
-                  if (this.mapService) {
-                    path.addTo(this.mapService.map)
-                    //pan to the last point
-                    let position = path.getLatLngs()[path.getLatLngs().length - 1]
-                    this.mapService.map.panTo(position)
-                this.history.push({ position: position, timestamp: new Date() })
-                localStorage.setItem('history', JSON.stringify(this.history))
-                gameService.gameState.next({ playerLocation: position })
-                  }
-                })
-            }, 1000);
+            if (this.currentInterval != this.timeInterval) {
+              history = JSON.parse(localStorage.getItem('history'+this.timeInterval) || '[]')
+              this.currentInterval = this.timeInterval
+            }
+
+            this.loop = setInterval(() => {
+              getUserPath(this.currentInterval).then((path: Polyline) => {
+                if (this.mapService) {
+                  path.addTo(this.mapService.map)
+                  let position = path.getLatLngs()[path.getLatLngs().length - 1]
+                  this.mapService.map.panTo(position)
+                  this.history.push({ position: position, timestamp: new Date() })
+                  localStorage.setItem('history+this.currentInterval', JSON.stringify(this.history))
+                  gameService.gameState.next({ playerLocation: position })
+                }
+              })
+            }, this.currentInterval);
           } else {
             clearInterval(this.loop)
           }
