@@ -1,4 +1,4 @@
-<mat-card id="title">
+<mat-card id="title" style="max-height: 100px;overflow: scroll;">
     <mat-card-header>
       <mat-card-title>{{id}}</mat-card-title>
     </mat-card-header>
@@ -6,6 +6,10 @@
        <p>{{features[0].properties.clue}}</p> 
       <button  (click)="setSim(!isSim)">sim</button>
       <button  (click)="setTracking(!isTracking)">Tracking</button>
+      <button  (click)="clearHistory()">Clear History</button>
+      <ul style="height: 100px; overflow:scroll">
+        <li *ngFor="let pos of history">{{pos.timestamp}} {{pos.position}}</li>
+      </ul>
     </mat-card-content>
   </mat-card>
 <app-map [zoom]="zoom" [center]="center" (map)="myMap"></app-map>

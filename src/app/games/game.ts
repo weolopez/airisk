@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { GoldGame } from "./gold/gold.game";
 import { ScavengerHuntGame } from "./scavenger-hunt.game";
+import { DecaturWarGame } from "./decatur-war/decatur-war.component";
 
 export interface GameI {
   id: string;
@@ -12,6 +13,7 @@ export interface GameI {
     geometry: {
       type: string;
       coordinates: Array<number>;
+      radius?: number;
     };
     properties: {
       name: string;
@@ -26,5 +28,5 @@ export interface GameI {
 }
 
 export class Games {
-   static games = [new GoldGame(), new ScavengerHuntGame()]
+   static games = [new GoldGame(), new ScavengerHuntGame(), new DecaturWarGame()]
 }

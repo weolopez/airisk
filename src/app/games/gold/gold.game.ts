@@ -4,8 +4,10 @@ import { GameI } from '../game';
 import { Component } from '@angular/core';
 import { MapService } from 'src/app/services/map/map.service';
 import { GameService } from 'src/app/services/game/game.service';
-import L from 'leaflet';
+import L, { Polyline } from 'leaflet';
 import { MatButtonModule } from '@angular/material/button';
+import { CommonModule } from '@angular/common';
+import { getUserPath } from 'src/app/services/map/icon-functions';
 
 @Component({
   selector: 'app-gold',
@@ -13,12 +15,17 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrls: ['./gold.game.scss'],
   standalone: true,
   imports: [
+    CommonModule,
     MapComponent,
     MatCardModule,
     MatButtonModule
   ]
 })
 export class GoldGame implements GameI {
+clearHistory() {
+  localStorage.removeItem('history')
+  this.history = []
+}
   isTracking: any;
   setTracking(isTracking: boolean) {
     if (this.gameService) {
@@ -58,6 +65,7 @@ export class GoldGame implements GameI {
   zoom = 18
   map: L.Map | undefined;
   circle: L.Circle<any> | undefined;
+  history = JSON.parse(localStorage.getItem('history') || '[]')
   constructor(public mapService?: MapService, public gameService?: GameService) {
     if (gameService) {
       gameService.game = this
@@ -65,15 +73,22 @@ export class GoldGame implements GameI {
         if (state.isSim != undefined) {
           this.isSim = state.isSim
           if (!this.isSim) {
+            let pos: [number,number] = [0,0]
             this.loop = setInterval(() => {
-              navigator.geolocation.getCurrentPosition((position) => {
+              // navigator.geolocation.getCurrentPosition((position) => {
 
-                let distance = this.distance(state.playerLocation, this.player.getLatLng())
-                if (distance && distance > 0.0001) return
-
-                gameService.gameState.next({ playerLocation: [position.coords.latitude, position.coords.longitude] })
-              })
-            }, 100);
+                getUserPath(1000).then((path: Polyline) => {
+                  if (this.mapService) {
+                    path.addTo(this.mapService.map)
+                    //pan to the last point
+                    let position = path.getLatLngs()[path.getLatLngs().length - 1]
+                    this.mapService.map.panTo(position)
+                this.history.push({ position: position, timestamp: new Date() })
+                localStorage.setItem('history', JSON.stringify(this.history))
+                gameService.gameState.next({ playerLocation: position })
+                  }
+                })
+            }, 1000);
           } else {
             clearInterval(this.loop)
           }
