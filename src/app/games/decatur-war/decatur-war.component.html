@@ -1,24 +1,26 @@
 <mat-drawer-container class="example-container" autosize>
-  <mat-drawer #drawer  mode="over" [opened]="false">
-    <mat-accordion>
+  <mat-drawer #drawer mode="side" [opened]="false" disableClose hasBackdrop="false">
+    <mat-accordion *ngIf="selectedPoint | async as data">
       <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>
-            Panel 1
+            {{ data.display_name.slice(0, 20) }}
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.
-        </p>
+        <ng-container >
+          <p>
+              {{ data.address | json }}
+          </p>
+        </ng-container>
       </mat-expansion-panel>
       <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>
-            Panel 2
+            data
           </mat-panel-title>
         </mat-expansion-panel-header>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.
+          {{ data | json }}
         </p>
       </mat-expansion-panel>
       <mat-expansion-panel>
@@ -27,9 +29,7 @@
             Panel 3
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.
-        </p>
+        <app-card></app-card>
       </mat-expansion-panel>
     </mat-accordion>
   </mat-drawer>
@@ -44,7 +44,7 @@
       <button mat-icon-button (click)="play()">
         <mat-icon>notifications</mat-icon>
       </button>
-      <button mat-icon-button>
+      <button mat-icon-button (click)="settings()">
         <mat-icon>settings</mat-icon>
       </button>
       <button mat-icon-button (click)="exit()">

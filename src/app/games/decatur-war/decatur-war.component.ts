@@ -10,29 +10,30 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { highlightBuilding, playBackgroundMusic } from '../../services/map/icon-functions';
-import { rectangle } from 'leaflet';
+import { getHistoryData, highlightBuilding, playBackgroundMusic } from '../../services/map/icon-functions';
+import { Observable } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { CardComponent } from "../../components/card.component";
 
 @Component({
-  selector: 'app-decatur-war',
-  templateUrl: './decatur-war.component.html',
-  styleUrls: ['./decatur-war.component.scss'],
-  standalone: true,
-  imports: [
-    MapComponent,
-    MatCardModule,
-    MatButtonModule,
-    MatToolbarModule,
-    MatTabsModule,
-    MatSidenavModule,
-    MatIconModule,
-    MatExpansionModule
-  ]
+    selector: 'app-decatur-war',
+    templateUrl: './decatur-war.component.html',
+    styleUrls: ['./decatur-war.component.scss'],
+    standalone: true,
+    imports: [
+        CommonModule,
+        MapComponent,
+        MatCardModule,
+        MatButtonModule,
+        MatToolbarModule,
+        MatTabsModule,
+        MatSidenavModule,
+        MatIconModule,
+        MatExpansionModule,
+        CardComponent
+    ]
 })
 export class DecaturWarGame implements GameI {
-play() {
-  playBackgroundMusic()
-}
   id: string = 'DecaturWar';
   name: string = 'Decatur War';
   description: string = 'War of Decatur';
@@ -61,11 +62,12 @@ play() {
   center: [number, number] = [33.7748, -84.294]
   zoom = 18
   map: L.Map | undefined;
+  selectedPoint: Observable<any> | undefined;
   constructor(public mapService?: MapService, public gameService?: GameService) {
     if (mapService) {
       //wait a second then execute a function
       setTimeout(() => {
-        highlightBuilding(mapService.gameLayer, mapService.map)
+        this.selectedPoint = highlightBuilding(mapService.gameLayer, mapService.map)
       }, 1000);
     }
   }
@@ -90,5 +92,13 @@ play() {
   }
   exit() {
     location.href = '/games';
+  }
+  settings() {
+    getHistoryData().then((data) => {
+      alert(data)
+    })
+  }
+  play() {
+    playBackgroundMusic()
   }
 }
