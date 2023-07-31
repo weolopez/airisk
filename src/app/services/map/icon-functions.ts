@@ -3,11 +3,13 @@ import { icons } from './icon';
 import { Geometry } from 'geojson';
 import { Observable } from 'rxjs';
 
+import geojsonData from '../../../assets/decatur-war.json'
+
 export async function getHistoryData() {
   const url = 'https://cabalbot.azurewebsites.net/crud/histories/names/Weo%20Lopez';
 
   let response;
-    response = await fetch(url);
+  response = await fetch(url);
 
   // Throw an error if the response returned a HTTP status code error
   if (!response.ok) {
@@ -23,7 +25,7 @@ export async function getHistoryData() {
 const audio = new Audio('/assets/background-music.mp3');
 audio.loop = true
 export function playBackgroundMusic() {
-//check if audio is paused
+  //check if audio is paused
   if (!audio.paused) {
     audio.pause();
   } else {
@@ -49,30 +51,27 @@ export function highlightBuilding(layer: L.GeoJSON<any, Geometry>, map: L.Map): 
   return new Observable((observer) => {
     layer.on('click', async (event: L.LeafletMouseEvent) => {
       const latLng = event.latlng;
-      // let googlePlacesApiKey:any = {"web":{"client_id":"818213215011-4c91betuclr3mp5hkgq7kek3daph2k66.apps.googleusercontent.com","project_id":"weolopez","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_secret":"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","redirect_uris":["http://localhost:4200/auth"],"javascript_origins":["http://localhost:4200"]}}
-      // googlePlacesApiKey = encodeURIComponent(JSON.stringify(googlePlacesApiKey));
 
-      // const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latLng.lat},${latLng.lng}&radius=500&key=${googlePlacesApiKey}`;
-
-      // const response = await fetch(url, {
-      //   headers: {
-      //     'Access-Control-Allow-Origin': '*',
-      //     'Access-Control-Allow-Credentials': 'true',
-      //   },
-      // });
-      // if (!response.ok) {
-      //   const errorText = await response.text();
-      //   console.error('HTTP error:', errorText);
-      //   throw new Error('HTTP error status ' + response.status + ': ' + errorText);
+      // let data2 = await getBuildingGeometry(latLng.lat, latLng.lng)
+      // if (data2) {
+      //   const latLngs = Object.values(data2.polygon).map(coord => {
+      //     const { lat, lon } = coord as { lat: number, lon: number };
+      //     return L.latLng(lat, lon);
+      //   });
+      //   const p = L.polygon(latLngs, { color: 'red' })
+      //   // let p = L.polygon(data2.polygon , { color: 'red' })
+      //   p.addTo(map);
+      //   // data2.polygon.addTo(map)
       // }
 
-      // const data2 = await response.json();
-
-
       let data = await getFeatures(latLng.lat, latLng.lng)
-      console.dir(data);
-      //add data2 to data
-      data = { ...data}//, ...data2 }
+      console.log('#####B#####')
+      console.log(JSON.stringify(data));
+      console.log('#####E#####')
+      //create a new variable feature that is a subset of geojsonData.features where data.place_id === feature.place_id
+      const features = geojsonData.features.filter(feature => feature.place_id === data.place_id)
+      //replace data with features only if features.length > 0
+      data = features.length > 0 ? features[0] : data;
 
       // allow only data.address.building or data.address.amenity
       const addressVariables = ['building', 'amenity', 'leisure', 'shop', 'railway'];
@@ -87,10 +86,16 @@ export function highlightBuilding(layer: L.GeoJSON<any, Geometry>, map: L.Map): 
         // L.rectangle(bounds, { color: 'red' }).addTo(map);
         if (circle) {
           circle.remove();
-        } 
-          circle = L.circle([data.lat, data.lon], { radius: 10, color: 'blue' }).addTo(map);
-        
+        }
+        circle = L.circle([data.lat, data.lon], { radius: 10, color: 'blue' }).addTo(map);
+
         // L.circle([data.lat, data.lon], { radius: 10, color: 'blue' }).addTo(map);
+      } else {
+        if (circle) {
+          circle.remove();
+        }
+        circle = L.circle([data.lat, data.lon], { radius: 10, color: 'red' }).addTo(map);
+
       }
 
     });
@@ -104,74 +109,47 @@ async function getFeatures(lat: number, lon: number): Promise<any> {
     })
 }
 
-async function getGeometry(lat: number, lon: number): Promise<any> {
+function colorBuilding(map: L.Map, building: L.Polygon) {
+  building.setStyle({
+    color: 'red',
+    weight: 2,
+  });
+}
+
+
+async function getBuildingGeometry(lat: number, lng: number): Promise<any> {
   const overpassUrl = 'https://overpass-api.de/api/interpreter';
-  const radius = 50; // Radius in meters
-  const query = `
-      [out:json];
-      (
-          node(around:${radius},${lat},${lon});
-          way(around:${radius},${lat},${lon});
-          rel(around:${radius},${lat},${lon});
-      );
-      out center;
-  `;
+  const overpassQuery = `[out:json];
+    (
+      node(around:10,${lat},${lng})["building"];
+      way(around:10,${lat},${lng})["building"];
+      relation(around:10,${lat},${lng})["building"];
+    );
+    out geom;`;
 
   const response = await fetch(overpassUrl, {
     method: 'POST',
-    body: `data=${encodeURIComponent(query)}`,
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: `data=${encodeURIComponent(overpassQuery)}`,
   });
 
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  return await response.json();
+  var data = await response.json();
+
+  if (data.elements.length > 0) {
+    // console.log(`Elements length: ${data.elements.length}`);
+    // console.log(`Elements details: ${JSON.stringify(data.elements[0])}`);
+    const firstElement = data.elements[0];
+    const polygon = firstElement.geometry
+    const tags = firstElement.tags;
+    data = { tags: {...tags}, polygon: {...polygon} }
+    return data
+  } else {
+    console.log(`No elements found`);
+  } 
 }
-
-
-
-// export function animateMarker(marker: L.Marker, latlngs: L.LatLngExpression[], duration: number): void {
-//   const line = L.polyline(latlngs, { color: 'red' }).addTo(marker._map);
-//   const length = line._path.getTotalLength();
-//   let time = 0;
-//   marker.setLatLng(latlngs[0]);
-//   const animate = () => {
-//     time += 10;
-//     const p = line._path.getPointAtLength((time / duration) * length);
-//     marker.setLatLng(line._map.layerPointToLatLng(p));
-//     if (time < duration) {
-//       requestAnimationFrame(animate);
-//     } else {
-//       line.remove();
-//     }
-//   };
-//   animate();
-// }
-
-// export function moveMarker(marker: L.Marker, latlng: L.LatLngExpression, duration: number): void {
-//   const startLatLng = marker.getLatLng();
-//   const distance = startLatLng.distanceTo(latlng);
-//   const speed = distance / duration;
-//   const bearing = startLatLng.bearingTo(latlng);
-//   const animate = () => {
-//     const distanceLeft = marker.getLatLng().distanceTo(latlng);
-//     if (distanceLeft > speed) {
-//       const distanceToMove = speed / 1000 / 6371;
-//       const newLatLng = marker.getLatLng().destinationPoint(bearing, distanceToMove * 180 / Math.PI);
-//       marker.setLatLng(newLatLng);
-//       requestAnimationFrame(animate);
-//     } else {
-//       marker.setLatLng(latlng);
-//     }
-//   };
-//   animate();
-// }
-
-// export function addSvgLayer(svgString: string, latlng: L.LatLngExpression, options?: L.PathOptions): L.Layer {
-//   const svgUrl = `data:image/svg+xml;base64,${btoa(svgString)}`;
-//   const imageBounds = L.latLngBounds([latlng]);
-//   const imageOverlay = L.imageOverlay(svgUrl, imageBounds, options);
-//   return imageOverlay.addTo(this.map);
-// }

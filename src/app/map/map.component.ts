@@ -46,10 +46,10 @@ export class MapComponent implements AfterViewInit {
     });
     //render default map
     let osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
+      maxZoom: 18
     }).addTo(this.mapService.map);
     this.mapService.osm = osm
-
+   
     // this.mapService.map.on('click', (e: any) => {
     //   var lat = e.latlng.lat;
     //   var lon = e.latlng.lng;

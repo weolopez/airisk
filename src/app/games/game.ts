@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { GoldGame } from "./gold/gold.game";
-import { ScavengerHuntGame } from "./scavenger-hunt.game";
 import { DecaturWarGame } from "./decatur-war/decatur-war.component";
+import { CardGame } from "./card/card.game";
 
 export interface GameI {
   id: string;
@@ -28,5 +28,5 @@ export interface GameI {
 }
 
 export class Games {
-   static games = [new GoldGame(), new ScavengerHuntGame(), new DecaturWarGame()]
+   static games = [new GoldGame(), new CardGame(), new DecaturWarGame()]
 }

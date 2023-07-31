@@ -7,6 +7,7 @@ import { GameService } from './services/game/game.service';
 import { GameStateComponent } from "./components/game-state/game-state.component";
 import { MapService } from './services/map/map.service';
 import L from 'leaflet';
+import { getNames, getByName, get, post, put, remove } from './collection/document.js'
 
 @Component({
     selector: 'app-root',
@@ -54,7 +55,7 @@ export class AppComponent {
           this.isSim = state.isSim
         }
       })
-      
+       
     }
   }
   

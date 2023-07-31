@@ -13,7 +13,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { getHistoryData, highlightBuilding, playBackgroundMusic } from '../../services/map/icon-functions';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { CardComponent } from "../../components/card.component";
+import { CardComponent } from "../../components/card/card.component";
 
 @Component({
     selector: 'app-decatur-war',

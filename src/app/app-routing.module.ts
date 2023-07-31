@@ -3,8 +3,10 @@ import { GamesComponent } from "./pages/games/games.component";
 import { NgModule } from "@angular/core";
 import { GoldGame } from "./games/gold/gold.game";
 import { DecaturWarGame } from "./games/decatur-war/decatur-war.component";
+import { CardGame } from "./games/card/card.game";
 
 const routes: Routes = [
+  { path: 'CardGame', component: CardGame },
   { path: 'GoldGame', component: GoldGame },
   { path: 'DecaturWar', component: DecaturWarGame },
   { path: 'games', component: GamesComponent },
