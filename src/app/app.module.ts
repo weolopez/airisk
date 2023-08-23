@@ -8,10 +8,12 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
+import { CalculatorComponent } from './components/calculator/calculator.component';
 
 @NgModule({
     declarations: [
         AppComponent,
+        CalculatorComponent,
     ],
     providers: [],
     bootstrap: [AppComponent],

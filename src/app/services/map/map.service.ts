@@ -15,49 +15,26 @@ export class MapService {
   event: BehaviorSubject<any>=new BehaviorSubject(undefined)
   previous: any;
   osm!: L.TileLayer;
-  constructor() { 
-    // playerService.currentPlayer.subscribe(player => {
-    //   this.currentPlayer = player
+  constructor() {
+
+    // this.layer.subscribe(layer => {
+    //   if (!layer) return;
+    //   this.selected = layer;
+    //   if (this.previous) {
+    //     this.previous.setStyle({
+    //       fillColor: this.previous.feature.properties.color
+    //     });
+    //   }
+    //   this.previous = this.selected;
+
+    //   let lat = this.selected.feature.geometry.coordinates[0][0][1];
+    //   let lng = this.selected.feature.geometry.coordinates[0][0][0];
+    //   this.selected.feature.properties.color = this.selected.options.fillColor;
     // })
-
-    this.layer.subscribe(layer => {
-      if (!layer) return;
-      this.selected = layer;
-      if (this.previous) {
-        this.previous.setStyle({
-          fillColor: this.previous.feature.properties.color
-        });
-      }
-      this.previous = this.selected;
-
-
-      // console.dir(event.feature.geometry.coordinates[0][0]);
-      let lat = this.selected.feature.geometry.coordinates[0][0][1];
-      let lng = this.selected.feature.geometry.coordinates[0][0][0];
-      this.selected.feature.properties.color = this.selected.options.fillColor;
-      // console.dir(this.selected.feature.properties)
-      // let style = {fillColor: playerService._currentPlayer.color.background}
-      // this.selected.setStyle(style);
-
-//TODO change to https://leafletjs.com/reference.html#map-fitbounds
-    // this.map.panTo([lat,lng]);
-    //pan to mouse click
-    // this.map.setZoom(13);
-
-    })
   }
-
-  // setCenter(latitude: number, longitude: number, radius: number) {
-  //   L.circle([latitude,longitude], radius).setStyle({fillColor:'blue'}).addTo(this.map);
-  //   // .addTo( map);
-  //   this.map.setZoom(radius);
-  //   this.map.panTo([latitude, longitude])
-  // }
 
   setCenter(cords: [number, number], radius: number) {
     let circle = L.circle(cords, radius).setStyle({fillColor:'blue'}).addTo(this.map)
-    // this.map.setZoom(radius)
-    // this.map.panTo(cords)
     return circle
   }
 

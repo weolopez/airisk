@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { GoldGame } from "./gold/gold.game";
 import { DecaturWarGame } from "./decatur-war/decatur-war.component";
 import { CardGame } from "./card/card.game";
+import { Risk } from "./risk/Game";
 
 export interface GameI {
   id: string;
@@ -24,9 +25,9 @@ export interface GameI {
       phone: string;
     };
   }>;
-  isGameOver(playerLocation: [number,number]) :any;
+  isGameOver(playerLocation: any) :any;
 }
 
 export class Games {
-   static games = [new GoldGame(), new CardGame(), new DecaturWarGame()]
+   static games = [new GoldGame(), new CardGame(), new DecaturWarGame(), new Risk()]
 }

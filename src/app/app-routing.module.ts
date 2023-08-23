@@ -4,9 +4,11 @@ import { NgModule } from "@angular/core";
 import { GoldGame } from "./games/gold/gold.game";
 import { DecaturWarGame } from "./games/decatur-war/decatur-war.component";
 import { CardGame } from "./games/card/card.game";
+import { CalculatorComponent } from "./components/calculator/calculator.component";
 
 const routes: Routes = [
   { path: 'CardGame', component: CardGame },
+  { path: 'calculator', component: CalculatorComponent },
   { path: 'GoldGame', component: GoldGame },
   { path: 'DecaturWar', component: DecaturWarGame },
   { path: 'games', component: GamesComponent },

@@ -1,8 +1,14 @@
+//TODO https://leaflet.github.io/Leaflet.markercluster/example/marker-clustering-realworld.388.html
+//TODO https://bopen.github.io/leaflet-area-selection/
+
+
 import { Component, AfterViewInit, Output, EventEmitter, Input } from '@angular/core';
 import * as L from 'leaflet';
 import * as geojsonData from '../../assets/output.json'
 import { MapService } from '../services/map/map.service';
 import { GeoJsonObject, Geometry } from 'geojson';
+import 'leaflet-routing-machine';
+
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -12,15 +18,11 @@ import { GeoJsonObject, Geometry } from 'geojson';
 export class MapComponent implements AfterViewInit {
   @Input() center: [number, number] = [51.505, -0.09];
   @Input() zoom: number = 18;
+  @Input() options: L.MapOptions = {};
   @Output() map = new EventEmitter<L.Map>();
   layer: any;
 
   constructor(public mapService: MapService) {
-    // playerService.currentPlayer.subscribe(player => {
-    //   if (this.setStyle) {
-    //     this.setStyle(player.color.background)
-    //   }
-    // })
   }
 
   //on @Input() change change the zoom level of the map
@@ -34,36 +36,38 @@ export class MapComponent implements AfterViewInit {
 
   private initMap(): void {
 
+
     this.mapService.map = L.map('map', {
       zoomControl: false,
       touchZoom: false,
       center: this.center,
       zoom: this.zoom
     });
+
+    var routingControl = L.Routing.control({
+      router: L.Routing.osrmv1({
+          serviceUrl: `http://router.project-osrm.org/route/v1/`
+      }),
+      showAlternatives: true,
+      fitSelectedRoutes: false,
+      show: false,
+      routeWhileDragging: true,
+      waypoints: [
+        L.latLng(33.77557573089917, -84.29627180099489),
+        L.latLng(33.774487723163425, -84.29169058799745)
+    ]
+   }).addTo(this.mapService.map);
+
     this.mapService.map._handlers.forEach((handler: any) => {
       handler.disable();
 
     });
     //render default map
-    let osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18
+    let osm = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    // let osm = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+      maxZoom: 20,
     }).addTo(this.mapService.map);
     this.mapService.osm = osm
-   
-    // this.mapService.map.on('click', (e: any) => {
-    //   var lat = e.latlng.lat;
-    //   var lon = e.latlng.lng;
-
-    //   fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`)
-    //     .then(function (response) {
-    //       return response.json();
-    //     })
-    //     .then(function (jsonData) {
-    //       console.log(jsonData);
-    //     });
-    // });
-
-    // this.mapService.map.setView([32.1656, -82.9001], 6);
 
     const layer: L.GeoJSON<any, Geometry> = L.geoJSON(geojsonData as GeoJsonObject).addTo(this.mapService.map)
     this.mapService.gameLayer = layer
@@ -73,6 +77,7 @@ export class MapComponent implements AfterViewInit {
         //get event data lat lng
         let lat = event.latlng.lat;
         let lng = event.latlng.lng;
+        console.log(lat, lng)
         // this.mapService.map.setZoom(18);
         // this.mapService.map.panTo([lat, lng])
         // this.mapService.layer.next(layer)

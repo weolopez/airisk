@@ -11,7 +11,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { getHistoryData, highlightBuilding, playBackgroundMusic } from '../../services/map/icon-functions';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { CardComponent } from "../../components/card/card.component";
 
@@ -68,8 +68,17 @@ export class DecaturWarGame implements GameI {
       //wait a second then execute a function
       setTimeout(() => {
         this.selectedPoint = highlightBuilding(mapService.gameLayer, mapService.map)
+        this.selectedPoint.pipe(
+          tap((data) => {
+            this.newSelectedPoint(data);
+          })
+        ).subscribe();
       }, 1000);
     }
+  }
+
+  newSelectedPoint(data: any) {
+    console.log(data);
   }
   isGameOver(playerLocation: [number, number]) {
     throw new Error('Method not implemented.');
@@ -94,9 +103,9 @@ export class DecaturWarGame implements GameI {
     location.href = '/games';
   }
   settings() {
-    getHistoryData().then((data) => {
-      alert(data)
-    })
+    // getHistoryData().then((data) => {
+    //   alert(data)
+    // })
   }
   play() {
     playBackgroundMusic()

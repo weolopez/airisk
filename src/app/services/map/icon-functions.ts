@@ -46,55 +46,119 @@ export function getIcon(iconName: string, options?: L.IconOptions): L.Marker {
 }
 
 let circle: L.Circle | null = null;
+let polygon: L.Polygon | null = null;
+let pins: L.Marker[] = [];
+const icon = L.icon({
+  iconUrl: '/assets/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+
+// L.Polygon.include({
+
+//   console.log('updating polygon')
+
+// })
+function getPolygon(latLngs: L.LatLng[], map: L.Map) {
+  if (polygon && pins) {
+    polygon.remove();
+    pins.forEach(pin => pin.remove())
+  }
+
+  // polygon =  L.polygon(latLngs, { color: 'red' }).addTo(map);
+  // create a red polygon from an array of LatLng points
+var latlngss = [[37, -109.05],[41, -109.03],[41, -102.05],[37, -102.04]];
+
+ polygon = L.polygon(latLngs, {color: 'red'}).addTo(map);
+
+  pins = latLngs.map(latLng => {
+    const marker = L.marker(latLng, { draggable: true, icon: icon });
+    
+    marker.on('dragend', () => {
+      latLngs.splice(latLngs.indexOf(latLng), 1, marker.getLatLng());
+      if (polygon) {
+        console.log(JSON.stringify(polygon.toGeoJSON()))
+      }
+      
+      getPolygon(latLngs, map);
+    });
+
+    // Add a popup menu to the marker that allows the user to remove it
+    marker.bindPopup(`<button onclick="removeMarker(${latLng.lat}, ${latLng.lng})">Remove Marker</button>`);
+
+    return marker;
+  })
+  //add all pins to map
+  pins.forEach(pin => pin.addTo(map))
+  // const latLngsArray = latLngs.map(latLng => [latLng.lat, latLng.lng])
+  // console.log('latLngs:'+latLngs)
+}
+
+// Function to remove a marker from the map
+ function removeMarker(lat: number, lng: number) {
+  alert(`Removing marker at ${lat}, ${lng}`)
+  const marker = pins.find(pin => pin.getLatLng().lat === lat && pin.getLatLng().lng === lng);
+  if (marker) {
+    const index = pins.indexOf(marker);
+    pins.splice(index, 1);
+    // latLngs.splice(index, 1);
+    // getPolygon(latLngs, map);
+    marker.remove();
+  }
+}
+(window as any).removeMarker = removeMarker;
 
 export function highlightBuilding(layer: L.GeoJSON<any, Geometry>, map: L.Map): Observable<any> {
   return new Observable((observer) => {
     layer.on('click', async (event: L.LeafletMouseEvent) => {
-      const latLng = event.latlng;
+
+      const latLng: L.LatLng = event.latlng;
+      
+      let data:any = await getFeatures(latLng.lat, latLng.lng)
+
+      const features = geojsonData.features.filter(feature => feature.place_id === data.place_id)
+      data = features.length > 0 ? features[0] : data;
 
       // let data2 = await getBuildingGeometry(latLng.lat, latLng.lng)
-      // if (data2) {
-      //   const latLngs = Object.values(data2.polygon).map(coord => {
-      //     const { lat, lon } = coord as { lat: number, lon: number };
-      //     return L.latLng(lat, lon);
-      //   });
-      //   const p = L.polygon(latLngs, { color: 'red' })
-      //   // let p = L.polygon(data2.polygon , { color: 'red' })
-      //   p.addTo(map);
-      //   // data2.polygon.addTo(map)
-      // }
+      if (data.feature) {
+        const latLngs = [data.feature.geometry.coordinates]
+        // Object.values(data.polygon).map(coord => {
+        //   const { lat, lon } = coord as { lat: number, lon: number };
+        //   return L.latLng(lat, lon);
+        // });
+        getPolygon(latLngs, map)
+      }
 
-      let data = await getFeatures(latLng.lat, latLng.lng)
+
       console.log('#####B#####')
-      console.log(JSON.stringify(data));
+      // console.log(JSON.stringify(data));
       console.log('#####E#####')
-      //create a new variable feature that is a subset of geojsonData.features where data.place_id === feature.place_id
-      const features = geojsonData.features.filter(feature => feature.place_id === data.place_id)
-      //replace data with features only if features.length > 0
-      data = features.length > 0 ? features[0] : data;
 
       // allow only data.address.building or data.address.amenity
       const addressVariables = ['building', 'amenity', 'leisure', 'shop', 'railway'];
       const validAddress = addressVariables.find(variable => data.address[variable]);
       if (validAddress) {
         observer.next(data);
-        // observer.complete();
-        //create a slice of an array with 0 and 3 and another with 2 and 4
-        let s1 = L.latLng(data.boundingbox[0], data.boundingbox[2])
-        let s2 = L.latLng(data.boundingbox[1], data.boundingbox[3])
-        const bounds = L.latLngBounds([s1, s2]);
-        // L.rectangle(bounds, { color: 'red' }).addTo(map);
-        if (circle) {
-          circle.remove();
-        }
-        circle = L.circle([data.lat, data.lon], { radius: 10, color: 'blue' }).addTo(map);
+      //   // observer.complete();
+      //   //create a slice of an array with 0 and 3 and another with 2 and 4
+      //   let s1 = L.latLng(data.boundingbox[0], data.boundingbox[2])
+      //   let s2 = L.latLng(data.boundingbox[1], data.boundingbox[3])
+      //   const bounds = L.latLngBounds([s1, s2]);
+      //   // L.rectangle(bounds, { color: 'red' }).addTo(map);
+      //   if (circle) {
+      //     circle.remove();
+      //   }
+      //   circle = L.circle([data.lat, data.lon], { radius: 10, color: 'blue' }).addTo(map);
 
-        // L.circle([data.lat, data.lon], { radius: 10, color: 'blue' }).addTo(map);
-      } else {
-        if (circle) {
-          circle.remove();
-        }
-        circle = L.circle([data.lat, data.lon], { radius: 10, color: 'red' }).addTo(map);
+      //   // L.circle([data.lat, data.lon], { radius: 10, color: 'blue' }).addTo(map);
+      // } else {
+      //   if (circle) {
+      //     circle.remove();
+      //   }
+      //   circle = L.circle([data.lat, data.lon], { radius: 10, color: 'red' }).addTo(map);
 
       }
 
