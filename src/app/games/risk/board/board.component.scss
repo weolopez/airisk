@@ -1,0 +1,14 @@
+.row {
+    display: flex;
+    flex-wrap: wrap; /* changed from nowrap to wrap */
+    align-items: center;
+    overflow: auto; /* added overflow property */
+}
+    
+div {
+    padding-right: 20px;
+}
+ul {
+    list-style: none;
+}
+

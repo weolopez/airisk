@@ -49,7 +49,7 @@ export class Action {
     static MOVE_ARMIES = 'MOVE_ARMIES';
   
     type: string;
-    payload: any;
+    payload: Territory;
   
     constructor(type: string, payload: any) {
       this.type = type;

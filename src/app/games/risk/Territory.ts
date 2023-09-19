@@ -1,6 +1,9 @@
 import { Player } from "./Player";
 
 export class Territory {
+    attackingTerritory: any;
+    defendingTerritory: any;
+    numDice: any;
     attack(defendingTerritory: Territory, numDice: any) {
         throw new Error('Method not implemented.');
     }
@@ -8,6 +11,7 @@ export class Territory {
   continent: string;
   armies: number;
   owner: Player | null;
+  territories: Territory[] = [];
   neighbors: Territory[] = [];
     numTroops: number;
 
@@ -18,15 +22,15 @@ export class Territory {
     this.owner = null;
   }
 
-  setOwner(player: Player): void {
-    this.owner = player;
-    player.addTerritory(this);
+  static setOwner(territory: any , player: Player): void {
+    territory.owner = player;
+    player.addTerritory(territory);
   }
 
-  removeOwner(): void {
-    if (this.owner) {
-      this.owner.removeTerritory(this);
-      this.owner = null;
+  static removeOwner(territory: any): void {
+    if (territory.owner) {
+      territory.owner = null;
     }
   }
+  
 }

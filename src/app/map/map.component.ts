@@ -44,27 +44,30 @@ export class MapComponent implements AfterViewInit {
       zoom: this.zoom
     });
 
-    var routingControl = L.Routing.control({
-      router: L.Routing.osrmv1({
-          serviceUrl: `http://router.project-osrm.org/route/v1/`
-      }),
-      showAlternatives: true,
-      fitSelectedRoutes: false,
-      show: false,
-      routeWhileDragging: true,
-      waypoints: [
-        L.latLng(33.77557573089917, -84.29627180099489),
-        L.latLng(33.774487723163425, -84.29169058799745)
-    ]
-   }).addTo(this.mapService.map);
+  //   var routingControl = L.Routing.control({
+  //     router: L.Routing.osrmv1({
+  //         serviceUrl: `http://router.project-osrm.org/route/v1/`
+  //     }),
+  //     showAlternatives: true,
+  //     fitSelectedRoutes: false,
+  //     show: false,
+  //     routeWhileDragging: true,
+  //     waypoints: [
+  //       L.latLng(33.77557573089917, -84.29627180099489),
+  //       L.latLng(33.774487723163425, -84.29169058799745)
+  //   ]
+  //  }).addTo(this.mapService.map);
 
-    this.mapService.map._handlers.forEach((handler: any) => {
-      handler.disable();
+  //   this.mapService.map._handlers.forEach((handler: any) => {
+  //     handler.disable();
 
-    });
+  //   });
+
     //render default map
-    let osm = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    // let osm = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    let osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     // let osm = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+      
       maxZoom: 20,
     }).addTo(this.mapService.map);
     this.mapService.osm = osm

@@ -5,6 +5,7 @@ import { GoldGame } from "./games/gold/gold.game";
 import { DecaturWarGame } from "./games/decatur-war/decatur-war.component";
 import { CardGame } from "./games/card/card.game";
 import { CalculatorComponent } from "./components/calculator/calculator.component";
+import { RiskBoardComponent } from "./games/risk/board/board.component";
 
 const routes: Routes = [
   { path: 'CardGame', component: CardGame },
@@ -13,6 +14,7 @@ const routes: Routes = [
   { path: 'DecaturWar', component: DecaturWarGame },
   { path: 'games', component: GamesComponent },
   { path: 'games/:game', component: GamesComponent },
+  { path: 'risk', component: RiskBoardComponent},
   { path: '', redirectTo: '/games', pathMatch: 'full' },
 ];
 

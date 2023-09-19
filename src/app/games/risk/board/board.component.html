@@ -1,0 +1,40 @@
+<main style="background-color: black;color: white;">
+    <div class="row">
+        Phase: <p style="color: red;padding-left: 10px;">{{phase}}</p>
+        <div style="padding-right: 50px;"></div>
+        <p [style.color]="players[currentPlayer].color">Current Player: {{players[currentPlayer].name}} </p>
+        <div style="padding-right: 50px;"></div>
+        Players: 
+        <div *ngFor="let player of players" style="color: {{player.color}};padding-left: 10px;">
+            {{ player.name }}
+        </div>
+    </div>
+
+    <div class="row" >
+        Player Actions: 
+        <button mat-button color="primary" (click)="assign()">Assign</button>
+    </div>
+
+    <div class="row">
+    </div>
+    <ul>
+        <li *ngFor="let territory of territories" [style.color]="players[territory.owner]?.color">
+
+            <div class="row">
+                <p style="padding-right: 20px;"> {{territory.name}}</p>
+                <div *ngIf="territory.owner || territory.owner ==0">{{players[territory.owner].name}}</div>
+            </div>
+
+            <div *ngIf="(!territory.owner && territory.owner !== 0)">
+                <button mat-button color="primary" (click)="own(territory)">Own
+                    Territory</button>
+            </div>
+            <button mat-button color="primary" (click)="territory.isVis=!territory.isVis">Show</button>
+            <ul *ngIf="territory.isVis">
+                <li *ngFor="let neighbor of territory.neighbors">
+                    {{neighbor}}
+                </li>
+            </ul>
+        </li>
+    </ul>
+</main>

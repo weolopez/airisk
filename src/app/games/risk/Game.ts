@@ -1,7 +1,8 @@
 import { Player } from "./Player";
 import { Territory } from "./Territory";
-import { Action } from "./Action";
+// import { Action } from "./Action";
 import { GameI } from "../game";
+import territories from '../../../assets/risk.json'
 
 export class Risk implements GameI {
     players = [
@@ -9,55 +10,10 @@ export class Risk implements GameI {
             new Player("Player 2", "blue"),
             new Player("Player 3", "green")
         ];
-        territories = [
-            new Territory('Alaska', 'North America'),
-            new Territory('Northwest Territory', 'North America'),
-            new Territory('Greenland', 'North America'),
-            new Territory('Alberta', 'North America'),
-            new Territory('Ontario', 'North America'),
-            new Territory('Quebec', 'North America'),
-            new Territory('Western United States', 'North America'),
-            new Territory('Eastern United States', 'North America'),
-            new Territory('Central America', 'North America'),
-            new Territory('Venezuela', 'South America'),
-            new Territory('Brazil', 'South America'),
-            new Territory('Peru', 'South America'),
-            new Territory('Argentina', 'South America'),
-            new Territory('Iceland', 'Europe'),
-            new Territory('Scandinavia', 'Europe'),
-            new Territory('Ukraine', 'Europe'),
-            new Territory('Great Britain', 'Europe'),
-            new Territory('Northern Europe', 'Europe'),
-            new Territory('Western Europe', 'Europe'),
-            new Territory('Southern Europe', 'Europe'),
-            new Territory('North Africa', 'Africa'),
-            new Territory('Egypt', 'Africa'),
-            new Territory('East Africa', 'Africa'),
-            new Territory('Congo', 'Africa'),
-            new Territory('South Africa', 'Africa'),
-            new Territory('Madagascar', 'Africa'),
-            new Territory('Ural', 'Asia'),
-            new Territory('Siberia', 'Asia'),
-            new Territory('Yakutsk', 'Asia'),
-            new Territory('Kamchatka', 'Asia'),
-            new Territory('Irkutsk', 'Asia'),
-            new Territory('Mongolia', 'Asia'),
-            new Territory('Japan', 'Asia'),
-            new Territory('Afghanistan', 'Asia'),
-            new Territory('Middle East', 'Asia'),
-            new Territory('India', 'Asia'),
-            new Territory('Siam', 'Asia'),
-            new Territory('China', 'Asia'),
-            new Territory('Indonesia', 'Australia'),
-            new Territory('New Guinea', 'Australia'),
-            new Territory('Western Australia', 'Australia'),
-            new Territory('Eastern Australia', 'Australia'),
-          ];
     currentPlayer: Player | null;
-
+    territories: Array<any> = territories
     constructor() {
         this.currentPlayer = null;
-        this.startGame();
     }
     id: string="risk";
     name: string="Risk";
@@ -74,18 +30,7 @@ export class Risk implements GameI {
             this.players.splice(index, 1);
         }
     }
-
-    addTerritory(territory: Territory): void {
-        this.territories.push(territory);
-    }
-
-    removeTerritory(territory: Territory): void {
-        const index = this.territories.indexOf(territory);
-        if (index !== -1) {
-            this.territories.splice(index, 1);
-        }
-    }
-
+    turnComplete = false;
     startGame(): void {
         // Shuffle the list of players
         const shuffledPlayers = this.shuffle(this.players);
@@ -94,7 +39,7 @@ export class Risk implements GameI {
         const territories = this.shuffle(this.territories);
         //for each territory, set the owner to the player
         territories.forEach((territory, index) => {
-            territory.setOwner(shuffledPlayers[index % shuffledPlayers.length]);
+            Territory.setOwner(territory , shuffledPlayers[index % shuffledPlayers.length]);
         });
 
         // let i = 0;
@@ -115,15 +60,16 @@ export class Risk implements GameI {
         // Start the game loop
         let turn = 1;
         let currentPlayerIndex = 0;
-        while (!this.isGameOver(this.players)) {
+        while (!this.isGameOver(this.players) && this.turnComplete) {
+            
             const currentPlayer = shuffledPlayers[currentPlayerIndex];
             const gameState = new GameState(this.players, this.territories, turn, currentPlayer);
 
             // Player takes their turn
             const action = currentPlayer.takeTurn(gameState);
-            if (this.isValidAction(action, gameState)) {
-                this.applyAction(action, gameState);
-            }
+                // if (this.isValidAction(action, gameState)) {
+                //     this.applyAction(action, gameState);
+                // }
 
             // Move to the next player
             currentPlayerIndex = (currentPlayerIndex + 1) % shuffledPlayers.length;
@@ -159,14 +105,14 @@ export class Risk implements GameI {
         return players.some(player => player.territories.length === 0);
     }
 
-    isValidAction(action: Action, state: GameState): boolean {
-        // TODO: Implement validation logic
-        return true;
-    }
+    // isValidAction(action: Action, state: GameState): boolean {
+    //     // TODO: Implement validation logic
+    //     return true;
+    // }
 
-    applyAction(action: Action, state: GameState): void {
-        action.apply(state);
-    }
+    // applyAction(action: Action, state: GameState): void {
+    //     action.apply(state);
+    // }
 }
 
 export class GameState {
