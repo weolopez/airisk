@@ -66,19 +66,19 @@
 				"serve": {
 					"builder": "@angular-devkit/build-angular:dev-server",
 					"configurations": {
-						"production": {
-							"browserTarget": "airisk:build:production"
+            "production": {
+              "buildTarget": "airisk:build:production"
 						},
-						"development": {
-							"browserTarget": "airisk:build:development"
+            "development": {
+              "buildTarget": "airisk:build:development"
 						}
 					},
 					"defaultConfiguration": "development"
 				},
 				"extract-i18n": {
 					"builder": "@angular-devkit/build-angular:extract-i18n",
-					"options": {
-						"browserTarget": "airisk:build"
+          "options": {
+            "buildTarget": "airisk:build"
 					}
 				},
 				"test": {
