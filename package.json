@@ -1,9 +1,9 @@
 {
   "name": "airisk",
-  "version": "0.0.1", 
+  "version": "0.0.1",
   "engines": {
     "node": ">=18.13.0"
-   }, 
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
