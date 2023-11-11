@@ -1,4 +1,4 @@
-<main style="background-color: black;color: white;">
+<main style="background-color: rgb(57, 55, 55);color: white;">
     <div class="row">
         Phase: <p style="color: red;padding-left: 10px;">{{phase}}</p>
         <div style="padding-right: 50px;"></div>
@@ -12,7 +12,7 @@
 
     <div class="row" >
         Player Actions: 
-        <button mat-button color="primary" (click)="assign()">Assign</button>
+        <button mat-button color="primary" (click)="auto()">{{phase}}</button>
     </div>
 
     <div class="row">
@@ -23,6 +23,7 @@
             <div class="row">
                 <p style="padding-right: 20px;"> {{territory.name}}</p>
                 <div *ngIf="territory.owner || territory.owner ==0">{{players[territory.owner].name}}</div>
+                <div *ngIf="territory.armies">Armies: {{territory.armies}}</div>
             </div>
 
             <div *ngIf="(!territory.owner && territory.owner !== 0)">
